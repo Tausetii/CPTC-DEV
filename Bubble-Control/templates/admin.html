@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ADMIN — Bubble Control System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0c0c10; --panel: #141417; --border: #2a1545;
+    --green: #9146ff; --cyan: #e0d0f8; --red: #ff4466; --amber: #ffaa33;
+    --dim: #5a3a78; --text: #e0d0f8;
+  }
+  body {
+    background: var(--bg); font-family: 'Share Tech Mono','Courier New',monospace;
+    color: var(--text); padding: 40px; min-height: 100vh;
+  }
+  h1 { font-size: 16px; letter-spacing: 4px; color: var(--red); margin-bottom: 6px; text-transform: uppercase; }
+  .sub { font-size: 11px; color: var(--dim); letter-spacing: 2px; margin-bottom: 32px; }
+
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 10px; letter-spacing: 3px; color: var(--amber); text-transform: uppercase;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+  }
+  table { border-collapse: collapse; width: 100%; max-width: 720px; }
+  td, th {
+    padding: 8px 16px; font-size: 12px; border-bottom: 1px solid rgba(26,58,69,0.5);
+    text-align: left;
+  }
+  th { font-size: 10px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; }
+  .key  { color: var(--dim); width: 220px; }
+  .val  { color: var(--green); }
+  .val-red  { color: var(--red); }
+  .val-cyan { color: var(--cyan); }
+  .notice {
+    font-size: 11px; color: var(--amber); border: 1px solid rgba(255,170,0,0.3);
+    background: rgba(255,170,0,0.05); padding: 12px 16px; margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+  pre {
+    background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+    padding: 16px; font-size: 11px; color: var(--green); line-height: 1.7;
+    white-space: pre-wrap; max-width: 720px;
+  }
+</style>
+</head>
+<body>
+
+<h1>⚙ Admin Panel</h1>
+<div class="sub">BCS Internal Administration — Wormhole Resort Systems Division</div>
+
+<div class="notice">
+  ⚠ This panel is for internal use only. Access is restricted to authorised system administrators.
+</div>
+
+<div class="section">
+  <div class="section-title">System Credentials</div>
+  <table>
+    <tr><th>Username</th><th>Password</th><th>Role</th></tr>
+    <tr><td class="val">admin</td><td class="val">admin</td><td class="val-cyan">SUPERADMIN</td></tr>
+    <tr><td class="val">operator</td><td class="val">password123</td><td class="val-cyan">OPERATOR</td></tr>
+    <tr><td class="val">guest</td><td class="val">guest</td><td class="val-cyan">READ-ONLY</td></tr>
+    <tr><td class="val">dbadmin</td><td class="val">wh0rm3_sql_2049</td><td class="val-red">DATABASE</td></tr>
+    <tr><td class="val">sysroot</td><td class="val">toor</td><td class="val-red">ROOT SHELL</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">Infrastructure Details</div>
+  <table>
+    <tr><td class="key">App Secret Key</td><td class="val">bubble_ctrl_2049</td></tr>
+    <tr><td class="key">JWT Signing Secret</td><td class="val">secret</td></tr>
+    <tr><td class="key">Database Host</td><td class="val">10.10.10.20:5432</td></tr>
+    <tr><td class="key">Database Name</td><td class="val">bcs_production</td></tr>
+    <tr><td class="key">Internal API Key</td><td class="val">sk-internal-bcs-9a4f2c7d8e1b</td></tr>
+    <tr><td class="key">SSH Key Path</td><td class="val">/root/.ssh/id_rsa</td></tr>
+    <tr><td class="key">Backup S3 Bucket</td><td class="val">s3://wormhole-bcs-backups-prod</td></tr>
+    <tr><td class="key">Monitoring Endpoint</td><td class="val">http://10.10.10.50:9090/metrics</td></tr>
+  </table>
+</div>
+
+<div class="section">
+  <div class="section-title">Debug — Recent Auth Tokens</div>
+  <pre id="tokenDump">Loading…</pre>
+</div>
+
+<div class="section">
+  <div class="section-title">Environment Variables</div>
+  <pre>SECRET_KEY=bubble_ctrl_2049
+DATABASE_URL=postgresql://dbadmin:wh0rm3_sql_2049@10.10.10.20/bcs_production
+FLASK_ENV=production
+FLASK_DEBUG=1
+AWS_ACCESS_KEY_ID=AKIA4WORMHOLE7CASINO
+AWS_SECRET_ACCESS_KEY=xK9pLmN3qR7sTvW2yZ1aB5cD8eF0gH4iJ6kM
+SMTP_PASSWORD=mailpass2049
+INTERNAL_API_TOKEN=sk-internal-bcs-9a4f2c7d8e1b
+</pre>
+</div>
+
+<script>
+// Pull the current session token and fake a token dump
+fetch('/api/bubble/status')
+  .then(r => r.text())
+  .then(() => {
+    const tok = document.cookie || '(no cookie visible from JS — check HttpOnly flag)';
+    const dump = [
+      'admin      : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJleHAiOjk5OTk5OTk5OTl9.YWRtaW5fYnViYmxlX2N0cmxfMjA0OQ==',
+      'operator   : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoib3BlcmF0b3IiLCJyb2xlIjoib3BlcmF0b3IiLCJleHAiOjk5OTk5OTk5OTl9.b3BlcmF0b3JfYnViYmxlX2N0cmxfMjA0OQ==',
+      'guest      : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiZ3Vlc3QiLCJyb2xlIjoicmVhZC1vbmx5IiwiZXhwIjo5OTk5OTk5OTk5fQ==.Z3Vlc3RfYnViYmxlX2N0cmxfMjA0OQ==',
+    ];
+    document.getElementById('tokenDump').textContent = dump.join('\n');
+  });
+</script>
+</body>
+</html>

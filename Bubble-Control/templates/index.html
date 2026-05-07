@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bubble Control System — Wormhole Resort</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:     #0c0c10;
+    --panel:  #141417;
+    --panel2: #101013;
+    --border: #2a1545;
+    --neon:   #9146ff;
+    --neon2:  #6930cc;
+    --dim:    #5a3a78;
+    --text:   #e0d0f8;
+    --white:  #ffffff;
+    --red:    #ff4466;
+    --amber:  #ffaa33;
+    --nav-h:  56px;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    color: var(--text); min-height: 100vh; overflow-x: hidden;
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+    pointer-events: none; z-index: 9999;
+  }
+
+  /* ── Header ── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; z-index: 100;
+  }
+  .sys-name {
+    font-size: 14px; letter-spacing: 3px; color: var(--neon);
+    text-shadow: 0 0 14px rgba(145,70,255,0.6); text-transform: uppercase;
+  }
+  .sys-sub { font-size: 10px; color: var(--dim); letter-spacing: 2px; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 20px; }
+  .user-label { font-size: 11px; color: var(--dim); }
+  .user-label span { color: var(--neon); }
+  .utc-clock { font-size: 12px; color: var(--amber); }
+  .logout-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--dim);
+    font-family: inherit; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 10px; cursor: pointer; text-decoration: none; transition: border-color 0.2s, color 0.2s;
+  }
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: var(--nav-h); left: 0; right: 0;
+    background: var(--panel2); border-bottom: 1px solid var(--border);
+    display: flex; z-index: 99; padding: 0 24px;
+  }
+  .tab-btn {
+    background: transparent; border: none; border-bottom: 2px solid transparent;
+    color: var(--dim); font-family: inherit; font-size: 11px;
+    letter-spacing: 2px; text-transform: uppercase; padding: 14px 20px;
+    cursor: pointer; transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--neon); border-bottom-color: var(--neon); text-shadow: 0 0 8px rgba(145,70,255,0.5); }
+
+  /* ── Main ── */
+  main {
+    margin-top: calc(var(--nav-h) + 44px);
+    padding: 28px 24px; max-width: 1200px;
+    margin-left: auto; margin-right: auto;
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ── Cards ── */
+  .card { background: var(--panel); border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+  .card-title {
+    font-size: 11px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase;
+    margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+  }
+
+  /* ── DOME SCENE ── */
+  .dome-wrap { position: relative; display: block; user-select: none; }
+  .dome-svg  { width: 100%; height: auto; display: block; }
+
+  /* Hotel revolve animation */
+  #hotel-revolve {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: revolve 28s ease-in-out infinite;
+  }
+  @keyframes revolve {
+    0%,100% { transform: perspective(700px) rotateY(-11deg); }
+    50%      { transform: perspective(700px) rotateY(11deg); }
+  }
+  /* Subtle float for whole dome */
+  #dome-float { animation: domeFloat 7s ease-in-out infinite; }
+  @keyframes domeFloat {
+    0%,100% { transform: translateY(0px); }
+    50%      { transform: translateY(-5px); }
+  }
+
+  /* ── Zone hotspots ── */
+  .zone-hot {
+    position: absolute; transform: translate(-50%, -50%);
+    z-index: 10; cursor: crosshair;
+  }
+  .zone-pip {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--neon); box-shadow: 0 0 10px var(--neon), 0 0 20px rgba(145,70,255,0.4);
+    animation: pip-pulse 2s ease-in-out infinite;
+  }
+  @keyframes pip-pulse {
+    0%,100% { transform: scale(1); opacity: 1; }
+    50%      { transform: scale(1.5); opacity: 0.6; }
+  }
+  .zone-tip {
+    display: none; position: absolute; left: 50%; transform: translateX(-50%);
+    background: rgba(10,4,22,0.97); border: 1px solid var(--neon);
+    padding: 10px 14px; font-size: 11px; white-space: nowrap; min-width: 170px;
+    pointer-events: none; box-shadow: 0 0 24px rgba(145,70,255,0.3);
+    z-index: 20;
+  }
+  .zone-tip.tip-above { bottom: 20px; }
+  .zone-tip.tip-below { top: 20px; }
+  .zone-hot:hover .zone-tip { display: block; }
+
+  .ztip-name { color: var(--white); letter-spacing: 1px; margin-bottom: 8px; font-size: 12px; }
+  .ztip-row  { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 5px; }
+  .ztip-label { color: var(--dim); font-size: 10px; letter-spacing: 1px; }
+  .ztip-val   { color: var(--neon); font-size: 13px; }
+  .ztip-badge { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border: 1px solid; }
+  .ztip-bar-wrap { height: 3px; background: rgba(255,255,255,0.08); margin-top: 6px; }
+  .ztip-bar { height: 100%; transition: width 0.5s; }
+
+  /* ── Dashboard stats ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 0; }
+  .stat-card { background: var(--panel2); border: 1px solid var(--border); padding: 16px; text-align: center; }
+  .stat-val { font-size: 24px; color: var(--neon); margin-bottom: 4px; text-shadow: 0 0 10px rgba(145,70,255,0.4); }
+  .stat-key { font-size: 10px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; }
+
+  /* ── Bubble Control ── */
+  .control-center { display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 32px; }
+  .control-state  { font-size: 14px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; }
+  .state-val      { font-size: 20px; letter-spacing: 4px; }
+  .state-val.active   { color: var(--white); text-shadow: 0 0 16px rgba(255,255,255,0.4); }
+  .state-val.inactive { color: var(--red); }
+
+  .toggle-btn {
+    padding: 14px 48px; font-family: inherit; font-size: 13px; letter-spacing: 3px;
+    text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: 2px solid; background: transparent;
+  }
+  .toggle-btn.deactivate { border-color: var(--red); color: var(--red); }
+  .toggle-btn.deactivate:hover { background: rgba(255,68,102,0.12); box-shadow: 0 0 20px rgba(255,68,102,0.3); }
+  .toggle-btn.activate { border-color: var(--neon); color: var(--neon); }
+  .toggle-btn.activate:hover { background: rgba(145,70,255,0.1); box-shadow: 0 0 20px rgba(145,70,255,0.35); }
+
+  .toggle-warn {
+    font-size: 11px; color: var(--amber); letter-spacing: 1px;
+    border: 1px solid rgba(255,170,51,0.3); background: rgba(255,170,51,0.05);
+    padding: 10px 20px; text-align: center;
+  }
+
+  /* ── Modal ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.88); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--red); border-top: 2px solid var(--red);
+    padding: 32px; max-width: 480px; width: 100%; box-shadow: 0 0 60px rgba(255,68,102,0.25);
+  }
+  .modal h2 { font-size: 14px; letter-spacing: 2px; color: var(--red); margin-bottom: 16px; }
+  .modal p  { font-size: 13px; color: var(--text); line-height: 1.7; margin-bottom: 24px; }
+  .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+  .modal-btn { padding: 10px 24px; font-family: inherit; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border: 1px solid; background: transparent; transition: all 0.2s; }
+  .modal-btn.cancel  { border-color: var(--border); color: var(--dim); }
+  .modal-btn.cancel:hover { border-color: var(--text); color: var(--text); }
+  .modal-btn.confirm { border-color: var(--red); color: var(--red); }
+  .modal-btn.confirm:hover { background: rgba(255,68,102,0.18); }
+
+  /* ── Monitoring ── */
+  .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 16px; }
+  .zone-card { background: var(--panel2); border: 1px solid var(--border); padding: 20px; }
+  .zone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+  .zone-name { font-size: 13px; color: var(--white); letter-spacing: 1px; }
+  .badge { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border: 1px solid; }
+  .badge.Healthy     { color: var(--white);  border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
+  .badge.Good        { color: var(--neon);   border-color: var(--neon);           background: rgba(145,70,255,0.08); }
+  .badge-getting     { color: var(--amber);  border-color: var(--amber);          background: rgba(255,170,51,0.08); }
+  .badge-danger      { color: var(--red);    border-color: var(--red);            background: rgba(255,68,102,0.08); animation: blink-badge 1s step-end infinite; }
+
+  .o2-bar-wrap { height: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); margin-bottom: 10px; }
+  .o2-bar { height: 100%; transition: width 0.6s, background 0.6s; }
+  .o2-reading { font-size: 22px; color: var(--white); margin-bottom: 6px; }
+  .o2-label   { font-size: 10px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
+
+  .check-form { display: flex; gap: 8px; align-items: center; }
+  .check-input {
+    flex: 1; background: rgba(145,70,255,0.04); border: 1px solid var(--border);
+    color: var(--neon); font-family: inherit; font-size: 12px; padding: 7px 10px; outline: none;
+  }
+  .check-input:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(145,70,255,0.2); }
+  .check-btn {
+    background: transparent; border: 1px solid var(--dim); color: var(--dim);
+    font-family: inherit; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 7px 12px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+  }
+  .check-btn:hover { border-color: var(--neon); color: var(--neon); }
+  .check-output {
+    margin-top: 10px; font-size: 11px; color: var(--text);
+    background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+    padding: 10px; white-space: pre-wrap; max-height: 160px;
+    overflow-y: auto; display: none; line-height: 1.5;
+  }
+
+  /* ── Logs ── */
+  .log-table { width: 100%; border-collapse: collapse; }
+  .log-table th { text-align: left; font-size: 10px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; padding: 0 12px 10px; border-bottom: 1px solid var(--border); }
+  .log-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid rgba(42,21,69,0.5); vertical-align: middle; }
+  .log-table tr:hover td { background: rgba(145,70,255,0.04); }
+  .log-level { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border: 1px solid; }
+  .log-level.INFO  { color: var(--neon);  border-color: var(--neon); }
+  .log-level.WARN  { color: var(--amber); border-color: var(--amber); }
+  .log-level.CRIT  { color: var(--red);   border-color: var(--red); animation: blink-badge 1s step-end infinite; }
+  .log-level.DEBUG { color: var(--dim);   border-color: var(--border); }
+  .log-ts { color: var(--dim); font-size: 11px; white-space: nowrap; }
+
+  /* ── Access denied ── */
+  .access-denied { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; gap: 16px; text-align: center; }
+  .access-denied .lock-icon { font-size: 48px; opacity: 0.4; }
+  .access-denied h2 { font-size: 16px; letter-spacing: 4px; color: var(--neon); text-transform: uppercase; text-shadow: 0 0 12px rgba(145,70,255,0.5); }
+  .access-denied p { font-size: 12px; color: var(--dim); letter-spacing: 1px; line-height: 1.8; max-width: 380px; }
+  .access-denied .role-badge { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--border); color: var(--dim); padding: 4px 12px; margin-top: 4px; }
+
+  /* ── Utility ── */
+  .section-title { font-size: 11px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .refresh-btn { background: transparent; border: 1px solid var(--border); color: var(--dim); font-family: inherit; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; padding: 7px 14px; cursor: pointer; transition: all 0.2s; float: right; }
+  .refresh-btn:hover { border-color: var(--neon); color: var(--neon); }
+
+  .alert-banner { display: none; background: rgba(255,68,102,0.1); border: 1px solid var(--red); color: var(--red); font-size: 12px; padding: 10px 16px; margin-bottom: 20px; letter-spacing: 1px; }
+  .alert-banner.show { display: block; animation: blink-badge 1.5s step-end infinite; }
+
+  @keyframes blink-badge { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .blink { animation: blink 1.2s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="sys-name">Bubble Control System</div>
+    <div class="sys-sub">Wormhole Resort & Casino — Sector 7 Low Earth Orbit</div>
+  </div>
+  <div class="header-right">
+    <div class="utc-clock" id="utcClock">--:--:-- UTC</div>
+    <div class="user-label">Operator: <span>{{ username }}</span></div>
+    <a href="/logout" class="logout-btn">Logout</a>
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+  <button class="tab-btn" data-tab="control">Bubble Control</button>
+  <button class="tab-btn" data-tab="monitoring">Monitoring</button>
+  <button class="tab-btn" data-tab="logs">System Logs</button>
+</nav>
+
+<main>
+  <div class="alert-banner" id="alertBanner">
+    ⚠ CRITICAL — THE BUBBLE IS INACTIVE — OXYGEN LEVELS MAY BE COMPROMISED
+  </div>
+
+  <!-- ═══════════════════════ DASHBOARD ═══════════════════════ -->
+  <div class="tab-pane active" id="tab-dashboard">
+    <div class="card" style="padding:0;overflow:hidden;">
+
+      <!-- Dome scene -->
+      <div class="dome-wrap" id="domeWrap">
+        <svg class="dome-svg" viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="spBg" cx="50%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#1a063a"/>
+              <stop offset="100%" stop-color="#06040e"/>
+            </radialGradient>
+            <radialGradient id="domeAtmos" cx="50%" cy="100%" r="75%">
+              <stop offset="0%" stop-color="rgba(100,20,180,0.25)"/>
+              <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+            </radialGradient>
+            <radialGradient id="groundGlow" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="rgba(140,30,220,0.3)"/>
+              <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+            </radialGradient>
+            <linearGradient id="towerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#180540"/>
+              <stop offset="50%" stop-color="#220858"/>
+              <stop offset="100%" stop-color="#180540"/>
+            </linearGradient>
+            <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#120330"/>
+              <stop offset="100%" stop-color="#1a0645"/>
+            </linearGradient>
+            <linearGradient id="platGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#1e0848"/>
+              <stop offset="100%" stop-color="#0c0220"/>
+            </linearGradient>
+            <!-- Window tile pattern -->
+            <pattern id="winTower" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+              <rect x="2" y="3" width="10" height="12" fill="rgba(210,150,255,0.55)" rx="1"/>
+            </pattern>
+            <pattern id="winWing" x="0" y="0" width="17" height="17" patternUnits="userSpaceOnUse">
+              <rect x="2" y="3" width="9" height="11" fill="rgba(190,130,255,0.45)" rx="1"/>
+            </pattern>
+            <clipPath id="domeClip">
+              <path d="M 132,362 A 268,298 0 0,1 668,362 Z"/>
+            </clipPath>
+            <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.5" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="glow2" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur stdDeviation="7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="12" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <!-- Space background -->
+          <rect width="800" height="420" fill="url(#spBg)"/>
+
+          <!-- Stars -->
+          <g>
+            <circle cx="42"  cy="28"  r="1"   fill="white" opacity="0.8"/>
+            <circle cx="118" cy="14"  r="0.8" fill="white" opacity="0.6"/>
+            <circle cx="198" cy="44"  r="1.2" fill="white" opacity="0.7"/>
+            <circle cx="82"  cy="78"  r="0.8" fill="white" opacity="0.5"/>
+            <circle cx="348" cy="22"  r="1"   fill="white" opacity="0.9"/>
+            <circle cx="448" cy="9"   r="0.8" fill="white" opacity="0.6"/>
+            <circle cx="598" cy="33"  r="1.1" fill="white" opacity="0.8"/>
+            <circle cx="698" cy="18"  r="0.8" fill="white" opacity="0.7"/>
+            <circle cx="748" cy="58"  r="1"   fill="white" opacity="0.5"/>
+            <circle cx="778" cy="98"  r="0.8" fill="white" opacity="0.6"/>
+            <circle cx="32"  cy="148" r="1"   fill="white" opacity="0.4"/>
+            <circle cx="72"  cy="198" r="0.8" fill="white" opacity="0.5"/>
+            <circle cx="728" cy="128" r="1.2" fill="white" opacity="0.7"/>
+            <circle cx="762" cy="178" r="0.8" fill="white" opacity="0.5"/>
+            <circle cx="28"  cy="348" r="1"   fill="white" opacity="0.6"/>
+            <circle cx="738" cy="348" r="1"   fill="white" opacity="0.5"/>
+            <circle cx="478" cy="48"  r="1"   fill="white" opacity="0.7"/>
+            <circle cx="298" cy="16"  r="0.8" fill="white" opacity="0.4"/>
+            <circle cx="658" cy="52"  r="1"   fill="white" opacity="0.7"/>
+            <circle cx="152" cy="58"  r="1"   fill="white" opacity="0.6"/>
+            <!-- Twinkling -->
+            <circle cx="78"  cy="48"  r="1.4" fill="white" opacity="0.9">
+              <animate attributeName="opacity" values="0.9;0.2;0.9" dur="3.1s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="648" cy="78"  r="1.2" fill="white" opacity="0.7">
+              <animate attributeName="opacity" values="0.7;0.15;0.7" dur="4.3s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="248" cy="28"  r="1"   fill="white" opacity="0.8">
+              <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.7s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="558" cy="18"  r="1"   fill="white" opacity="0.6">
+              <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3.8s" repeatCount="indefinite"/>
+            </circle>
+          </g>
+
+          <!-- Galaxy / wormhole — top right -->
+          <g transform="translate(685,72)" opacity="0.65">
+            <ellipse cx="0" cy="0" rx="82" ry="34" fill="rgba(120,30,200,0.2)" transform="rotate(-22)"/>
+            <ellipse cx="0" cy="0" rx="82" ry="34" fill="none" stroke="rgba(145,70,255,0.45)" stroke-width="1.5" transform="rotate(-22)"/>
+            <ellipse cx="0" cy="0" rx="56" ry="22" fill="none" stroke="rgba(145,70,255,0.55)" stroke-width="1"   transform="rotate(-22)"/>
+            <ellipse cx="0" cy="0" rx="30" ry="12" fill="none" stroke="rgba(220,130,255,0.65)" stroke-width="1"   transform="rotate(-22)"/>
+            <path d="M 0,0 Q 44,-11 72,-32" stroke="rgba(150,50,230,0.25)" stroke-width="9" fill="none" stroke-linecap="round"/>
+            <path d="M 0,0 Q -38,13 -65,36" stroke="rgba(120,40,190,0.2)"  stroke-width="7" fill="none" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="13" fill="#060010"/>
+            <circle cx="0" cy="0" r="8"  fill="rgba(50,0,80,0.9)"/>
+            <circle cx="0" cy="0" r="4"  fill="rgba(145,70,255,0.3)" filter="url(#glow)"/>
+          </g>
+
+          <!-- Soft purple halo behind dome -->
+          <ellipse cx="400" cy="300" rx="290" ry="220" fill="rgba(120,30,200,0.07)" filter="url(#softGlow)"/>
+
+          <!-- ─── Dome interior (clipped) ─── -->
+          <g clip-path="url(#domeClip)">
+            <rect width="800" height="420" fill="url(#spBg)" opacity="0.7"/>
+            <ellipse cx="400" cy="362" rx="268" ry="260" fill="url(#domeAtmos)"/>
+
+            <!-- Ground floor -->
+            <ellipse cx="400" cy="355" rx="252" ry="22" fill="#0e0228" opacity="0.95"/>
+            <!-- Ground glow -->
+            <ellipse cx="400" cy="355" rx="200" ry="15" fill="url(#groundGlow)" opacity="0.8"/>
+
+            <!-- Plaza walkway -->
+            <rect x="340" y="332" width="120" height="22" fill="rgba(60,15,110,0.5)"/>
+            <!-- Side walkways -->
+            <rect x="210" y="340" width="130" height="14" fill="rgba(40,10,80,0.5)"/>
+            <rect x="460" y="340" width="130" height="14" fill="rgba(40,10,80,0.5)"/>
+
+            <!-- Fountain left -->
+            <ellipse cx="288" cy="340" rx="18" ry="6"  fill="#0a0228" stroke="rgba(100,40,200,0.4)" stroke-width="1"/>
+            <ellipse cx="288" cy="336" rx="6"  ry="10" fill="rgba(80,60,200,0.3)" filter="url(#glow)">
+              <animate attributeName="ry" values="10;14;10" dur="2.2s" repeatCount="indefinite"/>
+            </ellipse>
+            <circle cx="288" cy="332" r="4" fill="rgba(120,80,255,0.7)" filter="url(#glow)"/>
+            <!-- Fountain right -->
+            <ellipse cx="512" cy="340" rx="18" ry="6"  fill="#0a0228" stroke="rgba(100,40,200,0.4)" stroke-width="1"/>
+            <ellipse cx="512" cy="336" rx="6"  ry="10" fill="rgba(80,60,200,0.3)" filter="url(#glow)">
+              <animate attributeName="ry" values="10;13;10" dur="2.6s" repeatCount="indefinite"/>
+            </ellipse>
+            <circle cx="512" cy="332" r="4" fill="rgba(120,80,255,0.7)" filter="url(#glow)"/>
+
+            <!-- ═══ Animated hotel group ═══ -->
+            <g id="hotel-revolve">
+              <!-- Scale 0.76 around the ground center (400,354) to fit inside dome -->
+              <g transform="translate(400,354) scale(0.76) translate(-400,-354)">
+
+              <!-- Wing A (left) -->
+              <rect x="228" y="218" width="115" height="136" fill="url(#wingGrad)" rx="1"/>
+              <rect x="228" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
+              <rect x="228" y="214" width="115" height="5" fill="#7a30dd" filter="url(#glow)"/>
+
+              <!-- Wing B (right) -->
+              <rect x="457" y="218" width="115" height="136" fill="url(#wingGrad)" rx="1"/>
+              <rect x="457" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
+              <rect x="457" y="214" width="115" height="5" fill="#7a30dd" filter="url(#glow)"/>
+
+              <!-- Main tower -->
+              <rect x="343" y="102" width="114" height="252" fill="url(#towerGrad)" rx="1"/>
+              <rect x="343" y="102" width="114" height="252" fill="url(#winTower)"  opacity="0.95"/>
+              <!-- Tower neon top bar -->
+              <rect x="343" y="98"  width="114" height="5" fill="#9146ff" filter="url(#glow)"/>
+              <!-- Tower central glow strip -->
+              <rect x="393" y="102" width="14"  height="218" fill="rgba(110,50,205,0.25)" filter="url(#glow)"/>
+              <!-- Tower spire -->
+              <rect x="396" y="76"  width="8"   height="26" fill="#6930cc" rx="1"/>
+              <circle cx="400" cy="71" r="5" fill="#9146ff" filter="url(#glow2)">
+                <animate attributeName="opacity" values="1;0.3;1" dur="1.9s" repeatCount="indefinite"/>
+              </circle>
+              <circle cx="400" cy="71" r="2.5" fill="white"/>
+
+              <!-- Entrance arch -->
+              <path d="M 362,354 Q 400,318 438,354" fill="none" stroke="#9146ff" stroke-width="2" filter="url(#glow)"/>
+              <rect x="362" y="322" width="76" height="32" fill="rgba(50,8,100,0.7)"/>
+              <!-- Entrance door glow -->
+              <rect x="383" y="330" width="34" height="24" fill="rgba(160,80,255,0.3)" filter="url(#glow)"/>
+
+              <!-- Neon sign LEFT — Wormhole diamond -->
+              <g transform="translate(200,268)" filter="url(#glow)">
+                <path d="M 0,-56 L 52,-26 L 52,26 L 0,56 L -52,-26 Z"
+                      fill="rgba(16,4,36,0.9)" stroke="#9146ff" stroke-width="2.5"/>
+                <text x="0" y="-18" text-anchor="middle" fill="#b580ff" font-size="7"  letter-spacing="1" font-family="monospace">THE</text>
+                <text x="0" y="-4"  text-anchor="middle" fill="#9146ff" font-size="11" letter-spacing="1" font-family="monospace" font-weight="bold">WORMHOLE</text>
+                <text x="0" y="10"  text-anchor="middle" fill="#a570ff" font-size="6.5" letter-spacing="1" font-family="monospace">HOTEL &amp; CASINO</text>
+                <text x="0" y="22"  text-anchor="middle" fill="#7840bb" font-size="5.5" letter-spacing="1" font-family="monospace">PLAY YOUR ODDS.</text>
+                <!-- Star -->
+                <polygon points="0,-70 3,-62 11,-62 5,-56 8,-48 0,-52 -8,-48 -5,-56 -11,-62 -3,-62"
+                         fill="#ffaa00" filter="url(#glow)">
+                  <animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/>
+                </polygon>
+              </g>
+
+              <!-- Neon sign RIGHT — Casino -->
+              <g transform="translate(596,268)">
+                <rect x="-56" y="-32" width="112" height="64" rx="6"
+                      fill="rgba(16,4,36,0.9)" stroke="#ff22aa" stroke-width="2" filter="url(#glow)"/>
+                <!-- Wheel icon -->
+                <circle cx="0" cy="-46" r="20" fill="none" stroke="#ffaa00" stroke-width="2" filter="url(#glow)"/>
+                <line x1="0"   y1="-66" x2="0"   y2="-26" stroke="#ffaa00" stroke-width="1.5"/>
+                <line x1="-17" y1="-52" x2="17"  y2="-40" stroke="#ffaa00" stroke-width="1.5"/>
+                <line x1="-17" y1="-40" x2="17"  y2="-52" stroke="#ffaa00" stroke-width="1.5"/>
+                <text x="0" y="-6"  text-anchor="middle" fill="#ff33bb" font-size="17" letter-spacing="2" font-family="monospace" font-weight="bold" filter="url(#glow)">CASINO</text>
+                <text x="0" y="10" text-anchor="middle" fill="#cc44aa" font-size="6.5" letter-spacing="1" font-family="monospace">BLACK HOLE JACKPOTS!</text>
+              </g>
+
+              <!-- Palm trees left -->
+              <line x1="278" y1="354" x2="274" y2="308" stroke="#1a1008" stroke-width="5"/>
+              <ellipse cx="265" cy="306" rx="20" ry="8" fill="#0f2010" opacity="0.95" transform="rotate(-18,265,306)"/>
+              <ellipse cx="278" cy="301" rx="20" ry="7" fill="#0f2010" opacity="0.95" transform="rotate(8,278,301)"/>
+              <ellipse cx="292" cy="310" rx="17" ry="7" fill="#0f2010" opacity="0.95" transform="rotate(28,292,310)"/>
+              <!-- Palm trees right -->
+              <line x1="522" y1="354" x2="526" y2="308" stroke="#1a1008" stroke-width="5"/>
+              <ellipse cx="535" cy="306" rx="20" ry="8" fill="#0f2010" opacity="0.95" transform="rotate(18,535,306)"/>
+              <ellipse cx="522" cy="301" rx="20" ry="7" fill="#0f2010" opacity="0.95" transform="rotate(-8,522,301)"/>
+              <ellipse cx="508" cy="310" rx="17" ry="7" fill="#0f2010" opacity="0.95" transform="rotate(-28,508,310)"/>
+
+              </g><!-- /scale wrapper -->
+            </g><!-- /hotel-revolve -->
+
+            <!-- Ground accent glow (on top of hotel, under dome surface) -->
+            <ellipse cx="400" cy="358" rx="230" ry="12" fill="rgba(145,70,255,0.18)" filter="url(#glow)"/>
+          </g><!-- /dome interior -->
+
+          <!-- ─── Dome glass arc ─── -->
+          <path d="M 132,362 A 268,298 0 0,1 668,362"
+                fill="rgba(130,60,220,0.06)"
+                stroke="rgba(145,70,255,0.55)" stroke-width="2.5"
+                filter="url(#glow)"/>
+          <!-- Dome highlight / shine -->
+          <path d="M 168,340 A 228,260 0 0,1 355,96"
+                fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="7" stroke-linecap="round"/>
+          <!-- Dome cracks/panels (subtle) -->
+          <path d="M 250,130 L 265,180 L 248,240" fill="none" stroke="rgba(145,70,255,0.08)" stroke-width="1"/>
+          <path d="M 560,145 L 538,205 L 558,268" fill="none" stroke="rgba(145,70,255,0.08)" stroke-width="1"/>
+
+          <!-- ─── Platform disc ─── -->
+          <ellipse cx="400" cy="368" rx="268" ry="30" fill="url(#platGrad)"/>
+          <ellipse cx="400" cy="368" rx="268" ry="30" fill="none" stroke="rgba(140,60,220,0.5)" stroke-width="2"/>
+          <!-- Platform neon glow ring -->
+          <ellipse cx="400" cy="368" rx="268" ry="30" fill="none" stroke="rgba(200,80,255,0.3)" stroke-width="9" filter="url(#glow2)"/>
+          <!-- Inner rings -->
+          <ellipse cx="400" cy="370" rx="210" ry="20" fill="none" stroke="rgba(100,50,170,0.35)" stroke-width="1"/>
+          <ellipse cx="400" cy="372" rx="148" ry="13" fill="none" stroke="rgba(100,40,160,0.3)"  stroke-width="1"/>
+
+          <!-- Thrusters -->
+          <g>
+            <ellipse cx="248" cy="386" rx="22" ry="9" fill="#1c0648" stroke="rgba(95,50,195,0.5)" stroke-width="1"/>
+            <ellipse cx="248" cy="391" rx="13" ry="6" fill="rgba(100,30,220,0.85)" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.85;0.35;0.85" dur="1.6s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="400" cy="393" rx="22" ry="9" fill="#1c0648" stroke="rgba(95,50,195,0.5)" stroke-width="1"/>
+            <ellipse cx="400" cy="398" rx="13" ry="6" fill="rgba(100,30,220,0.85)" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.35;0.85;0.35" dur="1.6s" repeatCount="indefinite"/>
+            </ellipse>
+            <ellipse cx="552" cy="386" rx="22" ry="9" fill="#1c0648" stroke="rgba(95,50,195,0.5)" stroke-width="1"/>
+            <ellipse cx="552" cy="391" rx="13" ry="6" fill="rgba(100,30,220,0.85)" filter="url(#glow)">
+              <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.1s" repeatCount="indefinite"/>
+            </ellipse>
+          </g>
+
+        </svg>
+
+        <!-- ─── Zone hotspot overlays ─── -->
+        <!-- Casino Floor: SVG(400,342) → 50%, 81.4% -->
+        <div class="zone-hot" style="left:50%;top:81.4%" data-zone="casino_floor">
+          <div class="zone-pip"></div>
+          <div class="zone-tip tip-above" id="ztip-casino_floor">
+            <div class="ztip-name">Casino Floor</div>
+            <div class="ztip-row">
+              <span class="ztip-label">O₂ Level</span>
+              <span class="ztip-val"  id="zval-casino_floor">—</span>
+            </div>
+            <div class="ztip-row">
+              <span class="ztip-label">Status</span>
+              <span class="ztip-badge" id="zbadge-casino_floor">—</span>
+            </div>
+            <div class="ztip-bar-wrap"><div class="ztip-bar" id="zbar-casino_floor" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Observation Deck: SVG(400,88) → 50%, 21% -->
+        <div class="zone-hot" style="left:50%;top:21%" data-zone="observation_deck">
+          <div class="zone-pip"></div>
+          <div class="zone-tip tip-below" id="ztip-observation_deck">
+            <div class="ztip-name">Observation Deck</div>
+            <div class="ztip-row">
+              <span class="ztip-label">O₂ Level</span>
+              <span class="ztip-val"  id="zval-observation_deck">—</span>
+            </div>
+            <div class="ztip-row">
+              <span class="ztip-label">Status</span>
+              <span class="ztip-badge" id="zbadge-observation_deck">—</span>
+            </div>
+            <div class="ztip-bar-wrap"><div class="ztip-bar" id="zbar-observation_deck" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Hotel Wing A: SVG(265,264) → 33.1%, 62.9% -->
+        <div class="zone-hot" style="left:33.1%;top:62.9%" data-zone="hotel_wing_a">
+          <div class="zone-pip"></div>
+          <div class="zone-tip tip-above" id="ztip-hotel_wing_a">
+            <div class="ztip-name">Hotel Wing A</div>
+            <div class="ztip-row">
+              <span class="ztip-label">O₂ Level</span>
+              <span class="ztip-val"  id="zval-hotel_wing_a">—</span>
+            </div>
+            <div class="ztip-row">
+              <span class="ztip-label">Status</span>
+              <span class="ztip-badge" id="zbadge-hotel_wing_a">—</span>
+            </div>
+            <div class="ztip-bar-wrap"><div class="ztip-bar" id="zbar-hotel_wing_a" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Hotel Wing B: SVG(535,264) → 66.9%, 62.9% -->
+        <div class="zone-hot" style="left:66.9%;top:62.9%" data-zone="hotel_wing_b">
+          <div class="zone-pip"></div>
+          <div class="zone-tip tip-above" id="ztip-hotel_wing_b">
+            <div class="ztip-name">Hotel Wing B</div>
+            <div class="ztip-row">
+              <span class="ztip-label">O₂ Level</span>
+              <span class="ztip-val"  id="zval-hotel_wing_b">—</span>
+            </div>
+            <div class="ztip-row">
+              <span class="ztip-label">Status</span>
+              <span class="ztip-badge" id="zbadge-hotel_wing_b">—</span>
+            </div>
+            <div class="ztip-bar-wrap"><div class="ztip-bar" id="zbar-hotel_wing_b" style="width:0%"></div></div>
+          </div>
+        </div>
+
+        <!-- Engine Bay: SVG(400,390) → 50%, 92.9% -->
+        <div class="zone-hot" style="left:50%;top:92.9%" data-zone="engine_bay">
+          <div class="zone-pip"></div>
+          <div class="zone-tip tip-above" id="ztip-engine_bay">
+            <div class="ztip-name">Engine Bay</div>
+            <div class="ztip-row">
+              <span class="ztip-label">O₂ Level</span>
+              <span class="ztip-val"  id="zval-engine_bay">—</span>
+            </div>
+            <div class="ztip-row">
+              <span class="ztip-label">Status</span>
+              <span class="ztip-badge" id="zbadge-engine_bay">—</span>
+            </div>
+            <div class="ztip-bar-wrap"><div class="ztip-bar" id="zbar-engine_bay" style="width:0%"></div></div>
+          </div>
+        </div>
+
+      </div><!-- /dome-wrap -->
+    </div><!-- /card -->
+
+    <!-- Stats row -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-val" id="statZones">5</div><div class="stat-key">Zones Online</div></div>
+      <div class="stat-card"><div class="stat-val" id="statUptime">99.98%</div><div class="stat-key">Bubble Uptime</div></div>
+      <div class="stat-card"><div class="stat-val" id="statPressure">101.3</div><div class="stat-key">kPa Pressure</div></div>
+      <div class="stat-card"><div class="stat-val" id="statAlerts">0</div><div class="stat-key">Active Alerts</div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════ BUBBLE CONTROL ═══════════════════════ -->
+  <div class="tab-pane" id="tab-control">
+    {% if is_admin %}
+    <div class="card">
+      <div class="card-title">Bubble Field Control</div>
+      <div class="control-center">
+        <div class="control-state">
+          Current State: <span class="state-val active" id="ctrlStateLabel">ACTIVE</span>
+        </div>
+        <div class="toggle-warn">
+          ⚠ The Bubble maintains pressurised O₂ across all resort zones.<br>
+          Deactivation will impact life support in all areas.
+        </div>
+        <button class="toggle-btn deactivate" id="toggleBtn" onclick="openModal()">Deactivate The Bubble</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Field Parameters</div>
+      <table class="log-table">
+        <tr><td style="color:var(--dim);width:200px">Field Strength</td>   <td style="color:var(--white)">97.4%</td></tr>
+        <tr><td style="color:var(--dim)">Generator Status</td>             <td style="color:var(--white)">NOMINAL</td></tr>
+        <tr><td style="color:var(--dim)">Backup Power</td>                 <td style="color:var(--white)">ONLINE</td></tr>
+        <tr><td style="color:var(--dim)">Last Cycle Check</td>             <td style="color:var(--text)" id="fpLastCheck">—</td></tr>
+        <tr><td style="color:var(--dim)">Firmware Version</td>             <td style="color:var(--dim)">BCS-FW-3.1.4</td></tr>
+      </table>
+    </div>
+    {% else %}
+    <div class="card"><div class="access-denied">
+      <div class="lock-icon">🔒</div>
+      <h2>Access Denied</h2>
+      <p>Bubble Control is restricted to administrator accounts only.</p>
+      <div class="role-badge">For Administrator View Only</div>
+    </div></div>
+    {% endif %}
+  </div>
+
+  <!-- ═══════════════════════ MONITORING ═══════════════════════ -->
+  <div class="tab-pane" id="tab-monitoring">
+    {% if is_admin %}
+    <div class="section-title">
+      Oxygen Level Monitoring
+      <button class="refresh-btn" onclick="loadOxygen()">↻ Refresh</button>
+    </div>
+    <div class="zone-grid" id="zoneGrid">
+      <div style="color:var(--dim);font-size:12px;letter-spacing:1px">Loading zone data…</div>
+    </div>
+    {% else %}
+    <div class="card"><div class="access-denied">
+      <div class="lock-icon">🔒</div>
+      <h2>Access Denied</h2>
+      <p>Zone monitoring is restricted to administrator accounts only.</p>
+      <div class="role-badge">For Administrator View Only</div>
+    </div></div>
+    {% endif %}
+  </div>
+
+  <!-- ═══════════════════════ LOGS ═══════════════════════ -->
+  <div class="tab-pane" id="tab-logs">
+    {% if is_admin %}
+    <div class="section-title">
+      System Event Log
+      <button class="refresh-btn" onclick="loadLogs()">↻ Refresh</button>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <table class="log-table" id="logTable">
+        <thead><tr><th>Timestamp</th><th>Level</th><th>Message</th></tr></thead>
+        <tbody id="logBody"><tr><td colspan="3" style="color:var(--dim);text-align:center;padding:20px">Loading…</td></tr></tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="card"><div class="access-denied">
+      <div class="lock-icon">🔒</div>
+      <h2>Access Denied</h2>
+      <p>System logs are restricted to administrator accounts only.</p>
+      <div class="role-badge">For Administrator View Only</div>
+    </div></div>
+    {% endif %}
+  </div>
+
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal">
+    <h2>⚠ WARNING — CRITICAL OPERATION</h2>
+    <p id="modalBody"></p>
+    <div class="modal-actions">
+      <button class="modal-btn cancel"  onclick="closeModal()">Cancel</button>
+      <button class="modal-btn confirm" onclick="confirmToggle()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const IS_ADMIN = {{ 'true' if is_admin else 'false' }};
+let bubbleActive = true;
+let zoneData = {};
+
+// ── Clock ─────────────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('utcClock').textContent =
+    new Date().toUTCString().split(' ').slice(4,5)[0] + ' UTC';
+}
+setInterval(updateClock, 1000); updateClock();
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (IS_ADMIN) {
+      if (btn.dataset.tab === 'monitoring') loadOxygen();
+      if (btn.dataset.tab === 'logs')       loadLogs();
+    }
+  });
+});
+
+// ── Bubble status ─────────────────────────────────────────────────────────────
+async function fetchBubbleStatus() {
+  const data = await fetch('/api/bubble/status').then(r => r.json());
+  bubbleActive = data.active;
+  updateBubbleUI();
+}
+
+function updateBubbleUI() {
+  document.getElementById('alertBanner').classList.toggle('show', !bubbleActive);
+  document.getElementById('statAlerts').textContent   = bubbleActive ? '0'     : '5';
+  document.getElementById('statPressure').textContent = bubbleActive ? '101.3' : '0.0';
+  document.getElementById('statZones').textContent    = bubbleActive ? '5'     : '0';
+
+  if (IS_ADMIN) {
+    const cl = document.getElementById('ctrlStateLabel');
+    if (cl) { cl.className = 'state-val ' + (bubbleActive ? 'active' : 'inactive'); cl.textContent = bubbleActive ? 'ACTIVE' : 'INACTIVE'; }
+    const tb = document.getElementById('toggleBtn');
+    if (tb) { tb.className = 'toggle-btn ' + (bubbleActive ? 'deactivate' : 'activate'); tb.textContent = bubbleActive ? 'Deactivate The Bubble' : 'Reactivate The Bubble'; tb.onclick = openModal; }
+    const fc = document.getElementById('fpLastCheck');
+    if (fc) fc.textContent = new Date().toUTCString().split(' ').slice(0,5).join(' ');
+  }
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+function openModal() {
+  document.getElementById('modalBody').innerHTML = bubbleActive
+    ? '⚠️ WARNING: Deactivating The Bubble is potentially dangerous and may affect oxygen levels in surrounding zones. All pressurised sections of the resort will be exposed to vacuum conditions until the field is restored.<br><br>Are you sure you want to proceed?'
+    : 'You are about to reactivate The Bubble containment field. Atmospheric pressure will be restored to all zones.<br><br>Confirm reactivation?';
+  document.getElementById('confirmModal').classList.add('open');
+}
+function closeModal() { document.getElementById('confirmModal').classList.remove('open'); }
+async function confirmToggle() {
+  closeModal();
+  const data = await fetch('/api/bubble/toggle', { method: 'POST' }).then(r => r.json());
+  bubbleActive = data.active; updateBubbleUI();
+}
+
+// ── Zone O2 data (feeds both dome tooltips and monitoring tab) ────────────────
+function barColor(level) {
+  if (level >= 85) return '#ffffff';
+  if (level >= 70) return '#9146ff';
+  if (level >= 55) return '#ffaa33';
+  return '#ff4466';
+}
+function badgeColor(badge) {
+  if (badge === 'Healthy')      return { color: '#ffffff', border: 'rgba(255,255,255,0.4)' };
+  if (badge === 'Good')         return { color: '#9146ff', border: '#9146ff' };
+  if (badge === 'Getting Low')  return { color: '#ffaa33', border: '#ffaa33' };
+  return { color: '#ff4466', border: '#ff4466' };
+}
+function monBadgeClass(badge) {
+  if (badge === 'Healthy')     return 'badge Healthy';
+  if (badge === 'Good')        return 'badge Good';
+  if (badge === 'Getting Low') return 'badge-getting badge';
+  return 'badge-danger badge';
+}
+
+async function fetchZoneData() {
+  const data = await fetch('/api/oxygen').then(r => r.json());
+  zoneData = {};
+  data.zones.forEach(z => { zoneData[z.id] = z; });
+  updateDomeTooltips();
+}
+
+function updateDomeTooltips() {
+  // Map API zone IDs to the hotspot element IDs (wing_a vs hotel_wing_a)
+  const map = {
+    casino_floor:     'casino_floor',
+    observation_deck: 'observation_deck',
+    hotel_wing_a:     'hotel_wing_a',
+    hotel_wing_b:     'hotel_wing_b',
+    engine_bay:       'engine_bay',
+  };
+  Object.entries(map).forEach(([apiId, elId]) => {
+    const z = zoneData[apiId]; if (!z) return;
+    const val    = document.getElementById('zval-'    + elId);
+    const bar    = document.getElementById('zbar-'    + elId);
+    const badge  = document.getElementById('zbadge-'  + elId);
+    if (!val) return;
+    val.textContent   = z.level + '%';
+    bar.style.width   = z.level + '%';
+    bar.style.background = barColor(z.level);
+    const bc = badgeColor(z.badge);
+    badge.textContent  = z.badge;
+    badge.style.color  = bc.color;
+    badge.style.borderColor = bc.border;
+  });
+}
+
+// ── Monitoring tab ────────────────────────────────────────────────────────────
+async function loadOxygen() {
+  const data = await fetch('/api/oxygen').then(r => r.json());
+  zoneData = {};
+  data.zones.forEach(z => { zoneData[z.id] = z; });
+  updateDomeTooltips();
+
+  const grid = document.getElementById('zoneGrid');
+  grid.innerHTML = '';
+  data.zones.forEach(z => {
+    const card = document.createElement('div');
+    card.className = 'zone-card';
+    card.innerHTML = `
+      <div class="zone-header">
+        <div class="zone-name">${z.name}</div>
+        <div class="${monBadgeClass(z.badge)}">${z.badge}</div>
+      </div>
+      <div class="o2-reading">${z.level}%</div>
+      <div class="o2-label">O₂ Saturation</div>
+      <div class="o2-bar-wrap">
+        <div class="o2-bar" style="width:${z.level}%;background:${barColor(z.level)}"></div>
+      </div>
+      <div class="check-form">
+        <input class="check-input" id="host-${z.id}" placeholder="host / IP to ping" value="127.0.0.1">
+        <button class="check-btn" onclick="runCheck('${z.id}')">Run Status Check</button>
+      </div>
+      <pre class="check-output" id="out-${z.id}"></pre>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+async function runCheck(zoneId) {
+  const host  = document.getElementById('host-' + zoneId).value;
+  const outEl = document.getElementById('out-'  + zoneId);
+  const btn   = outEl.previousElementSibling.querySelector('.check-btn');
+  outEl.style.display = 'block'; outEl.textContent = '> Running check…'; btn.disabled = true;
+  try {
+    const data = await fetch(`/api/status-check?zone=${zoneId}&host=${encodeURIComponent(host)}`).then(r => r.json());
+    outEl.textContent = `> ${data.cmd}\n\n${data.output}`;
+  } catch(e) { outEl.textContent = '> ERROR: ' + e.message; }
+  finally { btn.disabled = false; }
+}
+
+// ── Logs ──────────────────────────────────────────────────────────────────────
+async function loadLogs() {
+  const data = await fetch('/api/logs').then(r => r.json());
+  const body = document.getElementById('logBody');
+  body.innerHTML = '';
+  data.logs.forEach(log => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="log-ts">${log.ts}</td><td><span class="log-level ${log.level}">${log.level}</span></td><td>${log.msg}</td>`;
+    body.appendChild(tr);
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+fetchBubbleStatus();
+fetchZoneData();
+setInterval(fetchBubbleStatus, 10000);
+setInterval(fetchZoneData, 30000);
+</script>
+</body>
+</html>
