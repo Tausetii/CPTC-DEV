@@ -6,6 +6,7 @@ import hashlib
 import base64
 import json
 import os
+import platform
 
 app = Flask(__name__)
 app.secret_key = "bubble_ctrl_2049"  # intentionally weak
@@ -153,9 +154,11 @@ def api_oxygen():
 def api_status_check():
     host = request.args.get("host", "127.0.0.1")
     # VULNERABILITY: host passed directly to shell without sanitisation
-    cmd = f"ping -c 2 {host}"
-    result = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, timeout=10)
-    return jsonify({"cmd": cmd, "output": result.decode("utf-8", errors="replace")})
+    count_flag = "-n" if platform.system() == "Windows" else "-c"
+    cmd = f"ping {count_flag} 2 {host}"
+    result = subprocess.run(cmd, shell=True, capture_output=True, timeout=10)
+    output = (result.stdout + result.stderr).decode("utf-8", errors="replace")
+    return jsonify({"cmd": cmd, "output": output})
 
 # ── API: logs ─────────────────────────────────────────────────────────────────
 @app.route("/api/logs")

@@ -11,10 +11,10 @@
   :root {
     --bg:     #0c0c10;
     --panel:  #141417;
-    --border: #2a1545;
-    --neon:   #9146ff;
-    --dim:    #5a3a78;
-    --text:   #e0d0f8;
+    --border: #3d2e10;
+    --neon:   #ffd700;
+    --dim:    #7a6533;
+    --text:   #f5e8c0;
     --red:    #ff4466;
   }
 
@@ -55,14 +55,14 @@
   .resort-logo .logo-title { font-size: 11px; letter-spacing: 4px; color: var(--dim); text-transform: uppercase; }
   .resort-logo .logo-name {
     font-size: 20px; letter-spacing: 2px; color: var(--neon);
-    text-shadow: 0 0 18px rgba(145,70,255,0.7), 0 0 40px rgba(145,70,255,0.3);
+    text-shadow: 0 0 18px rgba(255,215,0,0.7), 0 0 40px rgba(255,215,0,0.3);
   }
 
   .card {
     width: 100%; background: var(--panel);
     border: 1px solid var(--border); border-top: 2px solid var(--neon);
     padding: 32px; position: relative;
-    box-shadow: 0 0 40px rgba(145,70,255,0.1), inset 0 0 40px rgba(0,0,0,0.5);
+    box-shadow: 0 0 40px rgba(255,215,0,0.1), inset 0 0 40px rgba(0,0,0,0.5);
   }
   .card::before {
     content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
@@ -79,19 +79,19 @@
     text-transform: uppercase; margin-bottom: 6px;
   }
   .field input {
-    width: 100%; background: rgba(145,70,255,0.04); border: 1px solid var(--border);
+    width: 100%; background: rgba(255,215,0,0.04); border: 1px solid var(--border);
     color: var(--neon); font-family: inherit; font-size: 14px;
     padding: 10px 12px; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
     letter-spacing: 1px;
   }
-  .field input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(145,70,255,0.25); }
+  .field input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(255,215,0,0.25); }
 
   .btn-login {
     width: 100%; background: transparent; border: 1px solid var(--neon); color: var(--neon);
     font-family: inherit; font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
     padding: 12px; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; margin-top: 8px;
   }
-  .btn-login:hover { background: rgba(145,70,255,0.12); box-shadow: 0 0 20px rgba(145,70,255,0.4); }
+  .btn-login:hover { background: rgba(255,215,0,0.12); box-shadow: 0 0 20px rgba(255,215,0,0.4); }
 
   .error-msg {
     background: rgba(255,68,102,0.1); border: 1px solid var(--red); color: var(--red);

@@ -12,11 +12,11 @@
     --bg:     #0c0c10;
     --panel:  #141417;
     --panel2: #101013;
-    --border: #2a1545;
-    --neon:   #9146ff;
-    --neon2:  #6930cc;
-    --dim:    #5a3a78;
-    --text:   #e0d0f8;
+    --border: #3d2e10;
+    --neon:   #ffd700;
+    --neon2:  #b8860b;
+    --dim:    #7a6533;
+    --text:   #f5e8c0;
     --white:  #ffffff;
     --red:    #ff4466;
     --amber:  #ffaa33;
@@ -43,7 +43,7 @@
   }
   .sys-name {
     font-size: 14px; letter-spacing: 3px; color: var(--neon);
-    text-shadow: 0 0 14px rgba(145,70,255,0.6); text-transform: uppercase;
+    text-shadow: 0 0 14px rgba(255,215,0,0.6); text-transform: uppercase;
   }
   .sys-sub { font-size: 10px; color: var(--dim); letter-spacing: 2px; margin-top: 2px; }
   .header-right { display: flex; align-items: center; gap: 20px; }
@@ -70,7 +70,7 @@
     cursor: pointer; transition: color 0.2s, border-color 0.2s;
   }
   .tab-btn:hover { color: var(--text); }
-  .tab-btn.active { color: var(--neon); border-bottom-color: var(--neon); text-shadow: 0 0 8px rgba(145,70,255,0.5); }
+  .tab-btn.active { color: var(--neon); border-bottom-color: var(--neon); text-shadow: 0 0 8px rgba(255,215,0,0.5); }
 
   /* ── Main ── */
   main {
@@ -116,7 +116,7 @@
   }
   .zone-pip {
     width: 11px; height: 11px; border-radius: 50%;
-    background: var(--neon); box-shadow: 0 0 10px var(--neon), 0 0 20px rgba(145,70,255,0.4);
+    background: var(--neon); box-shadow: 0 0 10px var(--neon), 0 0 20px rgba(255,215,0,0.4);
     animation: pip-pulse 2s ease-in-out infinite;
   }
   @keyframes pip-pulse {
@@ -125,9 +125,9 @@
   }
   .zone-tip {
     display: none; position: absolute; left: 50%; transform: translateX(-50%);
-    background: rgba(10,4,22,0.97); border: 1px solid var(--neon);
+    background: rgba(20,14,4,0.97); border: 1px solid var(--neon);
     padding: 10px 14px; font-size: 11px; white-space: nowrap; min-width: 170px;
-    pointer-events: none; box-shadow: 0 0 24px rgba(145,70,255,0.3);
+    pointer-events: none; box-shadow: 0 0 24px rgba(255,215,0,0.3);
     z-index: 20;
   }
   .zone-tip.tip-above { bottom: 20px; }
@@ -145,7 +145,7 @@
   /* ── Dashboard stats ── */
   .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-top: 0; }
   .stat-card { background: var(--panel2); border: 1px solid var(--border); padding: 16px; text-align: center; }
-  .stat-val { font-size: 24px; color: var(--neon); margin-bottom: 4px; text-shadow: 0 0 10px rgba(145,70,255,0.4); }
+  .stat-val { font-size: 24px; color: var(--neon); margin-bottom: 4px; text-shadow: 0 0 10px rgba(255,215,0,0.4); }
   .stat-key { font-size: 10px; color: var(--dim); letter-spacing: 2px; text-transform: uppercase; }
 
   /* ── Bubble Control ── */
@@ -162,7 +162,7 @@
   .toggle-btn.deactivate { border-color: var(--red); color: var(--red); }
   .toggle-btn.deactivate:hover { background: rgba(255,68,102,0.12); box-shadow: 0 0 20px rgba(255,68,102,0.3); }
   .toggle-btn.activate { border-color: var(--neon); color: var(--neon); }
-  .toggle-btn.activate:hover { background: rgba(145,70,255,0.1); box-shadow: 0 0 20px rgba(145,70,255,0.35); }
+  .toggle-btn.activate:hover { background: rgba(255,215,0,0.1); box-shadow: 0 0 20px rgba(255,215,0,0.35); }
 
   .toggle-warn {
     font-size: 11px; color: var(--amber); letter-spacing: 1px;
@@ -196,9 +196,9 @@
   .zone-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
   .zone-name { font-size: 13px; color: var(--white); letter-spacing: 1px; }
   .badge { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border: 1px solid; }
-  .badge.Healthy     { color: var(--white);  border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.05); }
-  .badge.Good        { color: var(--neon);   border-color: var(--neon);           background: rgba(145,70,255,0.08); }
-  .badge-getting     { color: var(--amber);  border-color: var(--amber);          background: rgba(255,170,51,0.08); }
+  .badge.Healthy     { color: #33dd66;       border-color: #33dd66;               background: rgba(51,221,102,0.08); }
+  .badge.Good        { color: #ff8833;       border-color: #ff8833;               background: rgba(255,136,51,0.08); }
+  .badge-getting     { color: #ffe833;       border-color: #ffe833;               background: rgba(255,232,51,0.08); }
   .badge-danger      { color: var(--red);    border-color: var(--red);            background: rgba(255,68,102,0.08); animation: blink-badge 1s step-end infinite; }
 
   .o2-bar-wrap { height: 8px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); margin-bottom: 10px; }
@@ -208,10 +208,10 @@
 
   .check-form { display: flex; gap: 8px; align-items: center; }
   .check-input {
-    flex: 1; background: rgba(145,70,255,0.04); border: 1px solid var(--border);
+    flex: 1; background: rgba(255,215,0,0.04); border: 1px solid var(--border);
     color: var(--neon); font-family: inherit; font-size: 12px; padding: 7px 10px; outline: none;
   }
-  .check-input:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(145,70,255,0.2); }
+  .check-input:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(255,215,0,0.2); }
   .check-btn {
     background: transparent; border: 1px solid var(--dim); color: var(--dim);
     font-family: inherit; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
@@ -228,8 +228,8 @@
   /* ── Logs ── */
   .log-table { width: 100%; border-collapse: collapse; }
   .log-table th { text-align: left; font-size: 10px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; padding: 0 12px 10px; border-bottom: 1px solid var(--border); }
-  .log-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid rgba(42,21,69,0.5); vertical-align: middle; }
-  .log-table tr:hover td { background: rgba(145,70,255,0.04); }
+  .log-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid rgba(61,46,16,0.5); vertical-align: middle; }
+  .log-table tr:hover td { background: rgba(255,215,0,0.04); }
   .log-level { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; padding: 2px 6px; border: 1px solid; }
   .log-level.INFO  { color: var(--neon);  border-color: var(--neon); }
   .log-level.WARN  { color: var(--amber); border-color: var(--amber); }
@@ -240,7 +240,7 @@
   /* ── Access denied ── */
   .access-denied { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; gap: 16px; text-align: center; }
   .access-denied .lock-icon { font-size: 48px; opacity: 0.4; }
-  .access-denied h2 { font-size: 16px; letter-spacing: 4px; color: var(--neon); text-transform: uppercase; text-shadow: 0 0 12px rgba(145,70,255,0.5); }
+  .access-denied h2 { font-size: 16px; letter-spacing: 4px; color: var(--neon); text-transform: uppercase; text-shadow: 0 0 12px rgba(255,215,0,0.5); }
   .access-denied p { font-size: 12px; color: var(--dim); letter-spacing: 1px; line-height: 1.8; max-width: 380px; }
   .access-denied .role-badge { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--border); color: var(--dim); padding: 4px 12px; margin-top: 4px; }
 
@@ -293,36 +293,36 @@
         <svg class="dome-svg" viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="spBg" cx="50%" cy="40%" r="70%">
-              <stop offset="0%" stop-color="#1a063a"/>
-              <stop offset="100%" stop-color="#06040e"/>
+              <stop offset="0%" stop-color="#3a2810"/>
+              <stop offset="100%" stop-color="#0a0805"/>
             </radialGradient>
             <radialGradient id="domeAtmos" cx="50%" cy="100%" r="75%">
-              <stop offset="0%" stop-color="rgba(100,20,180,0.25)"/>
+              <stop offset="0%" stop-color="rgba(200,160,40,0.25)"/>
               <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
             </radialGradient>
             <radialGradient id="groundGlow" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stop-color="rgba(140,30,220,0.3)"/>
+              <stop offset="0%" stop-color="rgba(220,180,50,0.3)"/>
               <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
             </radialGradient>
             <linearGradient id="towerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#180540"/>
-              <stop offset="50%" stop-color="#220858"/>
-              <stop offset="100%" stop-color="#180540"/>
+              <stop offset="0%" stop-color="#3a2812"/>
+              <stop offset="50%" stop-color="#4a3415"/>
+              <stop offset="100%" stop-color="#3a2812"/>
             </linearGradient>
             <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#120330"/>
-              <stop offset="100%" stop-color="#1a0645"/>
+              <stop offset="0%" stop-color="#2a1d08"/>
+              <stop offset="100%" stop-color="#3d2812"/>
             </linearGradient>
             <linearGradient id="platGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#1e0848"/>
-              <stop offset="100%" stop-color="#0c0220"/>
+              <stop offset="0%" stop-color="#3d2a14"/>
+              <stop offset="100%" stop-color="#1a1208"/>
             </linearGradient>
             <!-- Window tile pattern -->
             <pattern id="winTower" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
-              <rect x="2" y="3" width="10" height="12" fill="rgba(210,150,255,0.55)" rx="1"/>
+              <rect x="2" y="3" width="10" height="12" fill="rgba(255,210,100,0.55)" rx="1"/>
             </pattern>
             <pattern id="winWing" x="0" y="0" width="17" height="17" patternUnits="userSpaceOnUse">
-              <rect x="2" y="3" width="9" height="11" fill="rgba(190,130,255,0.45)" rx="1"/>
+              <rect x="2" y="3" width="9" height="11" fill="rgba(255,200,90,0.45)" rx="1"/>
             </pattern>
             <clipPath id="domeClip">
               <path d="M 132,362 A 268,298 0 0,1 668,362 Z"/>
@@ -383,19 +383,19 @@
 
           <!-- Galaxy / wormhole — top right -->
           <g transform="translate(685,72)" opacity="0.65">
-            <ellipse cx="0" cy="0" rx="82" ry="34" fill="rgba(120,30,200,0.2)" transform="rotate(-22)"/>
-            <ellipse cx="0" cy="0" rx="82" ry="34" fill="none" stroke="rgba(145,70,255,0.45)" stroke-width="1.5" transform="rotate(-22)"/>
-            <ellipse cx="0" cy="0" rx="56" ry="22" fill="none" stroke="rgba(145,70,255,0.55)" stroke-width="1"   transform="rotate(-22)"/>
-            <ellipse cx="0" cy="0" rx="30" ry="12" fill="none" stroke="rgba(220,130,255,0.65)" stroke-width="1"   transform="rotate(-22)"/>
-            <path d="M 0,0 Q 44,-11 72,-32" stroke="rgba(150,50,230,0.25)" stroke-width="9" fill="none" stroke-linecap="round"/>
-            <path d="M 0,0 Q -38,13 -65,36" stroke="rgba(120,40,190,0.2)"  stroke-width="7" fill="none" stroke-linecap="round"/>
-            <circle cx="0" cy="0" r="13" fill="#060010"/>
-            <circle cx="0" cy="0" r="8"  fill="rgba(50,0,80,0.9)"/>
-            <circle cx="0" cy="0" r="4"  fill="rgba(145,70,255,0.3)" filter="url(#glow)"/>
+            <ellipse cx="0" cy="0" rx="82" ry="34" fill="rgba(200,160,50,0.2)" transform="rotate(-22)"/>
+            <ellipse cx="0" cy="0" rx="82" ry="34" fill="none" stroke="rgba(255,215,0,0.45)" stroke-width="1.5" transform="rotate(-22)"/>
+            <ellipse cx="0" cy="0" rx="56" ry="22" fill="none" stroke="rgba(255,215,0,0.55)" stroke-width="1"   transform="rotate(-22)"/>
+            <ellipse cx="0" cy="0" rx="30" ry="12" fill="none" stroke="rgba(255,235,150,0.65)" stroke-width="1"   transform="rotate(-22)"/>
+            <path d="M 0,0 Q 44,-11 72,-32" stroke="rgba(220,180,60,0.25)" stroke-width="9" fill="none" stroke-linecap="round"/>
+            <path d="M 0,0 Q -38,13 -65,36" stroke="rgba(200,160,50,0.2)"  stroke-width="7" fill="none" stroke-linecap="round"/>
+            <circle cx="0" cy="0" r="13" fill="#0a0805"/>
+            <circle cx="0" cy="0" r="8"  fill="rgba(40,30,10,0.9)"/>
+            <circle cx="0" cy="0" r="4"  fill="rgba(255,215,0,0.3)" filter="url(#glow)"/>
           </g>
 
-          <!-- Soft purple halo behind dome -->
-          <ellipse cx="400" cy="300" rx="290" ry="220" fill="rgba(120,30,200,0.07)" filter="url(#softGlow)"/>
+          <!-- Soft gold halo behind dome -->
+          <ellipse cx="400" cy="300" rx="290" ry="220" fill="rgba(200,160,50,0.07)" filter="url(#softGlow)"/>
 
           <!-- ─── Dome interior (clipped) ─── -->
           <g clip-path="url(#domeClip)">
@@ -403,28 +403,28 @@
             <ellipse cx="400" cy="362" rx="268" ry="260" fill="url(#domeAtmos)"/>
 
             <!-- Ground floor -->
-            <ellipse cx="400" cy="355" rx="252" ry="22" fill="#0e0228" opacity="0.95"/>
+            <ellipse cx="400" cy="355" rx="252" ry="22" fill="#1a1208" opacity="0.95"/>
             <!-- Ground glow -->
             <ellipse cx="400" cy="355" rx="200" ry="15" fill="url(#groundGlow)" opacity="0.8"/>
 
             <!-- Plaza walkway -->
-            <rect x="340" y="332" width="120" height="22" fill="rgba(60,15,110,0.5)"/>
+            <rect x="340" y="332" width="120" height="22" fill="rgba(80,60,20,0.5)"/>
             <!-- Side walkways -->
-            <rect x="210" y="340" width="130" height="14" fill="rgba(40,10,80,0.5)"/>
-            <rect x="460" y="340" width="130" height="14" fill="rgba(40,10,80,0.5)"/>
+            <rect x="210" y="340" width="130" height="14" fill="rgba(60,45,15,0.5)"/>
+            <rect x="460" y="340" width="130" height="14" fill="rgba(60,45,15,0.5)"/>
 
             <!-- Fountain left -->
-            <ellipse cx="288" cy="340" rx="18" ry="6"  fill="#0a0228" stroke="rgba(100,40,200,0.4)" stroke-width="1"/>
-            <ellipse cx="288" cy="336" rx="6"  ry="10" fill="rgba(80,60,200,0.3)" filter="url(#glow)">
+            <ellipse cx="288" cy="340" rx="18" ry="6"  fill="#0a0804" stroke="rgba(200,160,40,0.4)" stroke-width="1"/>
+            <ellipse cx="288" cy="336" rx="6"  ry="10" fill="rgba(220,180,60,0.3)" filter="url(#glow)">
               <animate attributeName="ry" values="10;14;10" dur="2.2s" repeatCount="indefinite"/>
             </ellipse>
-            <circle cx="288" cy="332" r="4" fill="rgba(120,80,255,0.7)" filter="url(#glow)"/>
+            <circle cx="288" cy="332" r="4" fill="rgba(255,215,80,0.7)" filter="url(#glow)"/>
             <!-- Fountain right -->
-            <ellipse cx="512" cy="340" rx="18" ry="6"  fill="#0a0228" stroke="rgba(100,40,200,0.4)" stroke-width="1"/>
-            <ellipse cx="512" cy="336" rx="6"  ry="10" fill="rgba(80,60,200,0.3)" filter="url(#glow)">
+            <ellipse cx="512" cy="340" rx="18" ry="6"  fill="#0a0804" stroke="rgba(200,160,40,0.4)" stroke-width="1"/>
+            <ellipse cx="512" cy="336" rx="6"  ry="10" fill="rgba(220,180,60,0.3)" filter="url(#glow)">
               <animate attributeName="ry" values="10;13;10" dur="2.6s" repeatCount="indefinite"/>
             </ellipse>
-            <circle cx="512" cy="332" r="4" fill="rgba(120,80,255,0.7)" filter="url(#glow)"/>
+            <circle cx="512" cy="332" r="4" fill="rgba(255,215,80,0.7)" filter="url(#glow)"/>
 
             <!-- ═══ Animated hotel group ═══ -->
             <g id="hotel-revolve">
@@ -434,41 +434,41 @@
               <!-- Wing A (left) -->
               <rect x="228" y="218" width="115" height="136" fill="url(#wingGrad)" rx="1"/>
               <rect x="228" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
-              <rect x="228" y="214" width="115" height="5" fill="#7a30dd" filter="url(#glow)"/>
+              <rect x="228" y="214" width="115" height="5" fill="#cc9933" filter="url(#glow)"/>
 
               <!-- Wing B (right) -->
               <rect x="457" y="218" width="115" height="136" fill="url(#wingGrad)" rx="1"/>
               <rect x="457" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
-              <rect x="457" y="214" width="115" height="5" fill="#7a30dd" filter="url(#glow)"/>
+              <rect x="457" y="214" width="115" height="5" fill="#cc9933" filter="url(#glow)"/>
 
               <!-- Main tower -->
               <rect x="343" y="102" width="114" height="252" fill="url(#towerGrad)" rx="1"/>
               <rect x="343" y="102" width="114" height="252" fill="url(#winTower)"  opacity="0.95"/>
               <!-- Tower neon top bar -->
-              <rect x="343" y="98"  width="114" height="5" fill="#9146ff" filter="url(#glow)"/>
+              <rect x="343" y="98"  width="114" height="5" fill="#ffd700" filter="url(#glow)"/>
               <!-- Tower central glow strip -->
-              <rect x="393" y="102" width="14"  height="218" fill="rgba(110,50,205,0.25)" filter="url(#glow)"/>
+              <rect x="393" y="102" width="14"  height="218" fill="rgba(220,180,60,0.25)" filter="url(#glow)"/>
               <!-- Tower spire -->
-              <rect x="396" y="76"  width="8"   height="26" fill="#6930cc" rx="1"/>
-              <circle cx="400" cy="71" r="5" fill="#9146ff" filter="url(#glow2)">
+              <rect x="396" y="76"  width="8"   height="26" fill="#b8860b" rx="1"/>
+              <circle cx="400" cy="71" r="5" fill="#ffd700" filter="url(#glow2)">
                 <animate attributeName="opacity" values="1;0.3;1" dur="1.9s" repeatCount="indefinite"/>
               </circle>
               <circle cx="400" cy="71" r="2.5" fill="white"/>
 
               <!-- Entrance arch -->
-              <path d="M 362,354 Q 400,318 438,354" fill="none" stroke="#9146ff" stroke-width="2" filter="url(#glow)"/>
-              <rect x="362" y="322" width="76" height="32" fill="rgba(50,8,100,0.7)"/>
+              <path d="M 362,354 Q 400,318 438,354" fill="none" stroke="#ffd700" stroke-width="2" filter="url(#glow)"/>
+              <rect x="362" y="322" width="76" height="32" fill="rgba(60,40,12,0.7)"/>
               <!-- Entrance door glow -->
-              <rect x="383" y="330" width="34" height="24" fill="rgba(160,80,255,0.3)" filter="url(#glow)"/>
+              <rect x="383" y="330" width="34" height="24" fill="rgba(255,200,80,0.3)" filter="url(#glow)"/>
 
               <!-- Neon sign LEFT — Wormhole diamond -->
               <g transform="translate(200,268)" filter="url(#glow)">
                 <path d="M 0,-56 L 52,-26 L 52,26 L 0,56 L -52,-26 Z"
-                      fill="rgba(16,4,36,0.9)" stroke="#9146ff" stroke-width="2.5"/>
-                <text x="0" y="-18" text-anchor="middle" fill="#b580ff" font-size="7"  letter-spacing="1" font-family="monospace">THE</text>
-                <text x="0" y="-4"  text-anchor="middle" fill="#9146ff" font-size="11" letter-spacing="1" font-family="monospace" font-weight="bold">WORMHOLE</text>
-                <text x="0" y="10"  text-anchor="middle" fill="#a570ff" font-size="6.5" letter-spacing="1" font-family="monospace">HOTEL &amp; CASINO</text>
-                <text x="0" y="22"  text-anchor="middle" fill="#7840bb" font-size="5.5" letter-spacing="1" font-family="monospace">PLAY YOUR ODDS.</text>
+                      fill="rgba(20,12,4,0.9)" stroke="#ffd700" stroke-width="2.5"/>
+                <text x="0" y="-18" text-anchor="middle" fill="#ffe88a" font-size="7"  letter-spacing="1" font-family="monospace">THE</text>
+                <text x="0" y="-4"  text-anchor="middle" fill="#ffd700" font-size="11" letter-spacing="1" font-family="monospace" font-weight="bold">WORMHOLE</text>
+                <text x="0" y="10"  text-anchor="middle" fill="#ffd966" font-size="6.5" letter-spacing="1" font-family="monospace">HOTEL &amp; CASINO</text>
+                <text x="0" y="22"  text-anchor="middle" fill="#cc9933" font-size="5.5" letter-spacing="1" font-family="monospace">PLAY YOUR ODDS.</text>
                 <!-- Star -->
                 <polygon points="0,-70 3,-62 11,-62 5,-56 8,-48 0,-52 -8,-48 -5,-56 -11,-62 -3,-62"
                          fill="#ffaa00" filter="url(#glow)">
@@ -479,7 +479,7 @@
               <!-- Neon sign RIGHT — Casino -->
               <g transform="translate(596,268)">
                 <rect x="-56" y="-32" width="112" height="64" rx="6"
-                      fill="rgba(16,4,36,0.9)" stroke="#ff22aa" stroke-width="2" filter="url(#glow)"/>
+                      fill="rgba(20,12,4,0.9)" stroke="#ff22aa" stroke-width="2" filter="url(#glow)"/>
                 <!-- Wheel icon -->
                 <circle cx="0" cy="-46" r="20" fill="none" stroke="#ffaa00" stroke-width="2" filter="url(#glow)"/>
                 <line x1="0"   y1="-66" x2="0"   y2="-26" stroke="#ffaa00" stroke-width="1.5"/>
@@ -504,42 +504,42 @@
             </g><!-- /hotel-revolve -->
 
             <!-- Ground accent glow (on top of hotel, under dome surface) -->
-            <ellipse cx="400" cy="358" rx="230" ry="12" fill="rgba(145,70,255,0.18)" filter="url(#glow)"/>
+            <ellipse cx="400" cy="358" rx="230" ry="12" fill="rgba(255,215,0,0.18)" filter="url(#glow)"/>
           </g><!-- /dome interior -->
 
           <!-- ─── Dome glass arc ─── -->
           <path d="M 132,362 A 268,298 0 0,1 668,362"
-                fill="rgba(130,60,220,0.06)"
-                stroke="rgba(145,70,255,0.55)" stroke-width="2.5"
+                fill="rgba(200,160,50,0.06)"
+                stroke="rgba(255,215,0,0.55)" stroke-width="2.5"
                 filter="url(#glow)"/>
           <!-- Dome highlight / shine -->
           <path d="M 168,340 A 228,260 0 0,1 355,96"
                 fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="7" stroke-linecap="round"/>
           <!-- Dome cracks/panels (subtle) -->
-          <path d="M 250,130 L 265,180 L 248,240" fill="none" stroke="rgba(145,70,255,0.08)" stroke-width="1"/>
-          <path d="M 560,145 L 538,205 L 558,268" fill="none" stroke="rgba(145,70,255,0.08)" stroke-width="1"/>
+          <path d="M 250,130 L 265,180 L 248,240" fill="none" stroke="rgba(255,215,0,0.08)" stroke-width="1"/>
+          <path d="M 560,145 L 538,205 L 558,268" fill="none" stroke="rgba(255,215,0,0.08)" stroke-width="1"/>
 
           <!-- ─── Platform disc ─── -->
           <ellipse cx="400" cy="368" rx="268" ry="30" fill="url(#platGrad)"/>
-          <ellipse cx="400" cy="368" rx="268" ry="30" fill="none" stroke="rgba(140,60,220,0.5)" stroke-width="2"/>
+          <ellipse cx="400" cy="368" rx="268" ry="30" fill="none" stroke="rgba(200,160,40,0.5)" stroke-width="2"/>
           <!-- Platform neon glow ring -->
-          <ellipse cx="400" cy="368" rx="268" ry="30" fill="none" stroke="rgba(200,80,255,0.3)" stroke-width="9" filter="url(#glow2)"/>
+          <ellipse cx="400" cy="368" rx="268" ry="30" fill="none" stroke="rgba(255,215,80,0.3)" stroke-width="9" filter="url(#glow2)"/>
           <!-- Inner rings -->
-          <ellipse cx="400" cy="370" rx="210" ry="20" fill="none" stroke="rgba(100,50,170,0.35)" stroke-width="1"/>
-          <ellipse cx="400" cy="372" rx="148" ry="13" fill="none" stroke="rgba(100,40,160,0.3)"  stroke-width="1"/>
+          <ellipse cx="400" cy="370" rx="210" ry="20" fill="none" stroke="rgba(160,120,40,0.35)" stroke-width="1"/>
+          <ellipse cx="400" cy="372" rx="148" ry="13" fill="none" stroke="rgba(140,100,30,0.3)"  stroke-width="1"/>
 
           <!-- Thrusters -->
           <g>
-            <ellipse cx="248" cy="386" rx="22" ry="9" fill="#1c0648" stroke="rgba(95,50,195,0.5)" stroke-width="1"/>
-            <ellipse cx="248" cy="391" rx="13" ry="6" fill="rgba(100,30,220,0.85)" filter="url(#glow)">
+            <ellipse cx="248" cy="386" rx="22" ry="9" fill="#3a2810" stroke="rgba(200,160,50,0.5)" stroke-width="1"/>
+            <ellipse cx="248" cy="391" rx="13" ry="6" fill="rgba(255,180,40,0.85)" filter="url(#glow)">
               <animate attributeName="opacity" values="0.85;0.35;0.85" dur="1.6s" repeatCount="indefinite"/>
             </ellipse>
-            <ellipse cx="400" cy="393" rx="22" ry="9" fill="#1c0648" stroke="rgba(95,50,195,0.5)" stroke-width="1"/>
-            <ellipse cx="400" cy="398" rx="13" ry="6" fill="rgba(100,30,220,0.85)" filter="url(#glow)">
+            <ellipse cx="400" cy="393" rx="22" ry="9" fill="#3a2810" stroke="rgba(200,160,50,0.5)" stroke-width="1"/>
+            <ellipse cx="400" cy="398" rx="13" ry="6" fill="rgba(255,180,40,0.85)" filter="url(#glow)">
               <animate attributeName="opacity" values="0.35;0.85;0.35" dur="1.6s" repeatCount="indefinite"/>
             </ellipse>
-            <ellipse cx="552" cy="386" rx="22" ry="9" fill="#1c0648" stroke="rgba(95,50,195,0.5)" stroke-width="1"/>
-            <ellipse cx="552" cy="391" rx="13" ry="6" fill="rgba(100,30,220,0.85)" filter="url(#glow)">
+            <ellipse cx="552" cy="386" rx="22" ry="9" fill="#3a2810" stroke="rgba(200,160,50,0.5)" stroke-width="1"/>
+            <ellipse cx="552" cy="391" rx="13" ry="6" fill="rgba(255,180,40,0.85)" filter="url(#glow)">
               <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2.1s" repeatCount="indefinite"/>
             </ellipse>
           </g>
@@ -802,15 +802,15 @@ async function confirmToggle() {
 
 // ── Zone O2 data (feeds both dome tooltips and monitoring tab) ────────────────
 function barColor(level) {
-  if (level >= 85) return '#ffffff';
-  if (level >= 70) return '#9146ff';
-  if (level >= 55) return '#ffaa33';
+  if (level >= 85) return '#33dd66';
+  if (level >= 70) return '#ff8833';
+  if (level >= 55) return '#ffe833';
   return '#ff4466';
 }
 function badgeColor(badge) {
-  if (badge === 'Healthy')      return { color: '#ffffff', border: 'rgba(255,255,255,0.4)' };
-  if (badge === 'Good')         return { color: '#9146ff', border: '#9146ff' };
-  if (badge === 'Getting Low')  return { color: '#ffaa33', border: '#ffaa33' };
+  if (badge === 'Healthy')      return { color: '#33dd66', border: '#33dd66' };
+  if (badge === 'Good')         return { color: '#ff8833', border: '#ff8833' };
+  if (badge === 'Getting Low')  return { color: '#ffe833', border: '#ffe833' };
   return { color: '#ff4466', border: '#ff4466' };
 }
 function monBadgeClass(badge) {
