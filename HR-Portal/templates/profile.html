@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+    <div class="avatar-lg">{{ emp['full_name'][0] }}</div>
+    <div style="flex: 1;">
+        <h2>{{ emp['full_name'] }}</h2>
+        <div class="position">{{ emp['position'] }} — {{ emp['department'] }}</div>
+        <div class="meta">
+            <div class="field"><div class="lbl">Username</div><div class="val">{{ emp['username'] }}</div></div>
+            <div class="field"><div class="lbl">Email</div><div class="val">{{ emp['email'] }}</div></div>
+            <div class="field"><div class="lbl">Location</div><div class="val">{{ emp['location'] }}</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="card-header">Update Bio &amp; Emergency Contact</div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="field">
+                    <label>Bio</label>
+                    <textarea name="bio">{{ emp['bio'] or '' }}</textarea>
+                </div>
+                <div class="field">
+                    <label>Emergency contact name</label>
+                    <input type="text" name="emergency_contact_name" value="{{ emp['emergency_contact_name'] or '' }}">
+                </div>
+                <div class="field">
+                    <label>Emergency contact phone</label>
+                    <input type="text" name="emergency_contact_phone" value="{{ emp['emergency_contact_phone'] or '' }}">
+                </div>
+                <div class="field">
+                    <label>Relationship</label>
+                    <input type="text" name="emergency_contact_relation" value="{{ emp['emergency_contact_relation'] or '' }}">
+                </div>
+                <button class="btn" type="submit">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">My Personal Record</div>
+        <div class="card-body">
+            <table class="data">
+                <tr><th style="width: 40%;">Full name</th><td>{{ emp['full_name'] }}</td></tr>
+                <tr><th>Gender</th><td>{{ emp['gender'] }}</td></tr>
+                <tr><th>Date of birth</th><td>{{ emp['dob'] }}</td></tr>
+                <tr><th>SSN</th><td><code>{{ emp['ssn'] }}</code></td></tr>
+                <tr><th>Hire date</th><td>{{ emp['hire_date'] }}</td></tr>
+                <tr><th>Annual salary</th><td>${{ '{:,.0f}'.format(emp['salary']) }}</td></tr>
+            </table>
+            <hr>
+            <a class="btn secondary small" href="{{ url_for('greeting') }}">Customize my greeting</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

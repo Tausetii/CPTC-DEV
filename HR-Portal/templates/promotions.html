@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Promotion Requests{% endblock %}
+{% block content %}
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="card-header">Submit a Promotion Request</div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="field">
+                    <label>Target position</label>
+                    <input type="text" name="target_position" required placeholder="e.g. Senior Pit Boss">
+                </div>
+                <div class="field">
+                    <label>Justification</label>
+                    <textarea name="justification" required placeholder="Why do you deserve this promotion?"></textarea>
+                </div>
+                <div class="field">
+                    <label>Supporting attachment (resume, portfolio, certifications, etc.)</label>
+                    <input type="file" name="attachment">
+                </div>
+                <button class="btn" type="submit">Submit Request</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">My Past Requests</div>
+        <div class="card-body" style="padding: 0;">
+            <table class="data">
+                <thead><tr><th>Target</th><th>Status</th><th>Attachment</th><th>Date</th></tr></thead>
+                <tbody>
+                {% for r in requests %}
+                    <tr>
+                        <td>{{ r['target_position'] }}</td>
+                        <td>
+                            {% if r['status'] == 'pending' %}<span class="pill warn">Pending</span>
+                            {% elif r['status'] == 'approved' %}<span class="pill ok">Approved</span>
+                            {% elif r['status'] == 'denied' %}<span class="pill bad">Denied</span>
+                            {% else %}<span class="pill muted">{{ r['status'] }}</span>{% endif %}
+                        </td>
+                        <td>{% if r['attachment'] %}<a href="{{ url_for('uploaded_file', filename=r['attachment']) }}">{{ r['attachment'] }}</a>{% else %}<span class="muted">—</span>{% endif %}</td>
+                        <td>{{ r['created_at'][:10] }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="4" class="muted" style="padding: 16px;">No requests yet.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

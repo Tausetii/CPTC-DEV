@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Company Chat{% endblock %}
+{% block content %}
+
+<div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px;">
+    <div class="card">
+        <div class="card-header">#general</div>
+        <div class="card-body" style="padding: 0;">
+            <div class="chat-list">
+                {% for m in messages %}
+                    <div class="chat-message">
+                        <div class="avatar-sm">{{ m['username'][0]|upper }}</div>
+                        <div class="body">
+                            <div class="meta">
+                                <span class="name">{{ m['username'] }}</span>
+                                <span>{{ m['created_at'][:16].replace('T', ' ') }}</span>
+                            </div>
+                            <div class="msg-body">{{ m['message']|safe }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="muted" style="padding: 16px;">No messages yet. Be the first to say hi!</p>
+                {% endfor %}
+            </div>
+            <div style="padding: 14px 16px; border-top: 1px solid var(--border); background: var(--card-2);">
+                <form method="POST">
+                    <div class="field" style="margin-bottom: 8px;">
+                        <textarea name="message" placeholder="Write a message…" required style="min-height: 60px;"></textarea>
+                    </div>
+                    <button class="btn" type="submit">Post message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">About this channel</div>
+        <div class="card-body">
+            <p>The <strong>#general</strong> channel is the company-wide announcement and chat space.
+            All employees can read and post here.</p>
+            <p class="muted" style="font-size: 12px;">Be respectful. Messages support basic formatting.</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

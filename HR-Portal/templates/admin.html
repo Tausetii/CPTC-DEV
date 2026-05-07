@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <span>Administrator Tools</span>
+        <a class="btn small secondary" href="{{ url_for('admin_fetch') }}">URL fetch tool →</a>
+    </div>
+    <div class="card-body">
+        <p class="muted" style="margin-top: 0;">
+            Welcome, administrator. Manage employees, review promotion requests, and access internal tools.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">All Employees ({{ users|length }})</div>
+    <div class="card-body" style="padding: 0;">
+        <table class="data">
+            <thead>
+                <tr>
+                    <th>ID</th><th>Username</th><th>Name</th><th>Email</th><th>Role</th>
+                    <th>Salary</th><th>SSN</th><th class="right">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for u in users %}
+                <tr>
+                    <td>#{{ u['id'] }}</td>
+                    <td>{{ u['username'] }}</td>
+                    <td>{{ u['full_name'] }}</td>
+                    <td>{{ u['email'] }}</td>
+                    <td><span class="pill">{{ u['role'] }}</span></td>
+                    <td>{% if u['salary'] %}${{ '{:,.0f}'.format(u['salary']) }}{% endif %}</td>
+                    <td><code>{{ u['ssn'] }}</code></td>
+                    <td class="right">
+                        <a class="btn small danger" href="{{ url_for('admin_delete_user', user_id=u['id']) }}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Promotion Requests</div>
+    <div class="card-body" style="padding: 0;">
+        <table class="data">
+            <thead>
+                <tr><th>Employee</th><th>Target</th><th>Justification</th><th>Attachment</th><th>Status</th><th>Date</th></tr>
+            </thead>
+            <tbody>
+            {% for p in promos %}
+                <tr>
+                    <td>{{ p['full_name'] }}</td>
+                    <td>{{ p['target_position'] }}</td>
+                    <td style="max-width: 320px;">{{ p['justification'] }}</td>
+                    <td>{% if p['attachment'] %}<a href="{{ url_for('uploaded_file', filename=p['attachment']) }}">{{ p['attachment'] }}</a>{% endif %}</td>
+                    <td>{{ p['status'] }}</td>
+                    <td>{{ p['created_at'][:10] }}</td>
+                </tr>
+            {% else %}
+                <tr><td colspan="6" class="muted" style="padding: 16px;">No requests on file.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

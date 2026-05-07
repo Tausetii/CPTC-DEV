@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Company Directory{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">All Employees ({{ employees|length }})</div>
+    <div class="card-body" style="padding: 0;">
+        <table class="data">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Position</th>
+                    <th>Department</th>
+                    <th>Location</th>
+                    <th>Email</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for e in employees %}
+                <tr>
+                    <td><strong>{{ e['full_name'] }}</strong></td>
+                    <td>{{ e['position'] }}</td>
+                    <td><span class="pill">{{ e['department'] }}</span></td>
+                    <td>{{ e['location'] }}</td>
+                    <td>{{ e['email'] }}</td>
+                    <td class="right">
+                        <a class="btn small secondary" href="{{ url_for('employee_detail', user_id=e['id']) }}">View profile</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

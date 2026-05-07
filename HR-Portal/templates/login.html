@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login — Wormhole Resort &amp; Casino HR Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="login-wrap">
+    <div class="login-card">
+        <h1>Wormhole HR Portal</h1>
+        <div class="sub">Resort &amp; Casino — Employee Sign-in</div>
+        {% if error %}<div class="login-error">{{ error }}</div>{% endif %}
+        <form method="POST">
+            <div class="field">
+                <label>Username</label>
+                <input type="text" name="username" autofocus required>
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" name="password" required>
+            </div>
+            <button class="btn" type="submit">Sign in</button>
+        </form>
+        <p class="muted" style="font-size: 11px; text-align: center; margin-top: 18px; margin-bottom: 0;">
+            Issues signing in? Contact <a href="mailto:hr.partner@wormholeresort.com">HR Partner</a>.
+        </p>
+    </div>
+</div>
+</body>
+</html>

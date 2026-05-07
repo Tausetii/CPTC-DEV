@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Custom Greeting{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">Custom Greeting Template</div>
+    <div class="card-body">
+        <p class="muted" style="margin-top: 0;">
+            Personalize the greeting that appears on your dashboard. You can reference your own
+            information via <code>{{ '{{ user.full_name }}' }}</code>, <code>{{ '{{ user.position }}' }}</code>, etc.
+        </p>
+        <form method="POST">
+            <div class="field">
+                <label>Greeting template</label>
+                <textarea name="template" placeholder="Welcome back, {{ '{{ user.full_name }}' }}!">{{ template or '' }}</textarea>
+            </div>
+            <button class="btn" type="submit">Preview</button>
+        </form>
+
+        {% if rendered is not none %}
+            <hr>
+            <h3 style="margin-bottom: 6px; color: var(--purple-dark); font-size: 14px;">Preview</h3>
+            <div class="doc-content">{{ rendered }}</div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

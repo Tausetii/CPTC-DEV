@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}{{ emp['full_name'] }}{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+    <div class="avatar-lg">{{ emp['full_name'][0] }}</div>
+    <div style="flex: 1;">
+        <h2>{{ emp['full_name'] }}</h2>
+        <div class="position">{{ emp['position'] }} — {{ emp['department'] }}</div>
+        <div class="meta">
+            <div class="field"><div class="lbl">Employee ID</div><div class="val">#{{ emp['id'] }}</div></div>
+            <div class="field"><div class="lbl">Username</div><div class="val">{{ emp['username'] }}</div></div>
+            <div class="field"><div class="lbl">Email</div><div class="val">{{ emp['email'] }}</div></div>
+            <div class="field"><div class="lbl">Location</div><div class="val">{{ emp['location'] }}</div></div>
+            <div class="field"><div class="lbl">Hire Date</div><div class="val">{{ emp['hire_date'] }}</div></div>
+            <div class="field"><div class="lbl">Date of Birth</div><div class="val">{{ emp['dob'] }}</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="card-header">Personal Information</div>
+        <div class="card-body">
+            <table class="data">
+                <tr><th style="width: 40%;">Full name</th><td>{{ emp['full_name'] }}</td></tr>
+                <tr><th>Gender</th><td>{{ emp['gender'] }}</td></tr>
+                <tr><th>Date of birth</th><td>{{ emp['dob'] }}</td></tr>
+                <tr><th>Social Security Number</th><td><code>{{ emp['ssn'] }}</code></td></tr>
+                <tr><th>Email</th><td>{{ emp['email'] }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Emergency Contact</div>
+        <div class="card-body">
+            <table class="data">
+                <tr><th style="width: 40%;">Contact name</th><td>{{ emp['emergency_contact_name'] }}</td></tr>
+                <tr><th>Relationship</th><td>{{ emp['emergency_contact_relation'] }}</td></tr>
+                <tr><th>Phone</th><td>{{ emp['emergency_contact_phone'] }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Employment</div>
+        <div class="card-body">
+            <table class="data">
+                <tr><th style="width: 40%;">Position</th><td>{{ emp['position'] }}</td></tr>
+                <tr><th>Department</th><td>{{ emp['department'] }}</td></tr>
+                <tr><th>Location</th><td>{{ emp['location'] }}</td></tr>
+                <tr><th>Hire date</th><td>{{ emp['hire_date'] }}</td></tr>
+                <tr><th>Annual salary</th><td>${{ '{:,.0f}'.format(emp['salary']) }}</td></tr>
+                <tr><th>Role</th><td><span class="pill">{{ emp['role'] }}</span></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Bio</div>
+        <div class="card-body">
+            <p>{{ emp['bio'] or '—' }}</p>
+            <hr>
+            <p class="muted" style="font-size: 12px;">Need this employee's data programmatically?
+                <a href="{{ url_for('api_employee', user_id=emp['id']) }}" target="_blank">JSON endpoint</a>.
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

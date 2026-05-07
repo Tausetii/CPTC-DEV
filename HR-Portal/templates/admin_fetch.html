@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Admin — URL Fetch{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">URL Fetch Tool</div>
+    <div class="card-body">
+        <p class="muted" style="margin-top: 0;">
+            Internal admin tool — fetch and preview the contents of a URL. Useful for verifying
+            external job-board feeds, vendor status pages, and webhook endpoints.
+        </p>
+        <form method="POST">
+            <div class="field">
+                <label>URL</label>
+                <input type="text" name="url" value="{{ url or '' }}" placeholder="https://example.com/feed.json" required>
+            </div>
+            <button class="btn" type="submit">Fetch</button>
+        </form>
+
+        {% if fetched %}
+            <hr>
+            {% if fetched.error %}
+                <p class="flash error">Error: {{ fetched.error }}</p>
+            {% else %}
+                <h3 style="margin-bottom: 6px; color: var(--purple-dark); font-size: 14px;">
+                    Status: <code>{{ fetched.status }}</code>
+                </h3>
+                <h4 style="margin: 14px 0 4px; color: var(--text-muted); font-size: 12px; text-transform: uppercase;">Headers</h4>
+                <pre>{% for k, v in fetched.headers.items() %}{{ k }}: {{ v }}
+{% endfor %}</pre>
+                <h4 style="margin: 14px 0 4px; color: var(--text-muted); font-size: 12px; text-transform: uppercase;">Body (truncated)</h4>
+                <div class="doc-content">{{ fetched.body }}</div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

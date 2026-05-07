@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Document Library{% endblock %}
+{% block content %}
+
+<div class="card">
+    <div class="card-header">Company Documents</div>
+    <div class="card-body">
+        <p class="muted" style="margin-top: 0;">Internal HR &amp; policy documents. Click any file to view.</p>
+        <table class="data">
+            <thead><tr><th>Filename</th><th class="right">Action</th></tr></thead>
+            <tbody>
+            {% for f in files %}
+                <tr>
+                    <td><a href="{{ url_for('documents_view', file=f) }}">{{ f }}</a></td>
+                    <td class="right"><a class="btn small secondary" href="{{ url_for('documents_view', file=f) }}">View</a></td>
+                </tr>
+            {% else %}
+                <tr><td colspan="2" class="muted">No documents available.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

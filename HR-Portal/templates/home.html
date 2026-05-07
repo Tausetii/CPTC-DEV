@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block heading %}Welcome back, {{ user['full_name'].split(' ')[0] }}{% endblock %}
+{% block content %}
+
+<div class="profile-header">
+    <div class="avatar-lg">{{ user['full_name'][0] }}</div>
+    <div style="flex: 1;">
+        <h2>{{ user['full_name'] }}</h2>
+        <div class="position">{{ user['position'] }} — {{ user['department'] }}</div>
+        <div class="meta">
+            <div class="field"><div class="lbl">Code</div><div class="val">{{ user['username']|upper }}</div></div>
+            <div class="field"><div class="lbl">Status</div><div class="val">Full Time</div></div>
+            <div class="field"><div class="lbl">Department</div><div class="val">{{ user['department'] }}</div></div>
+            <div class="field"><div class="lbl">Location</div><div class="val">{{ user['location'] }}</div></div>
+            <div class="field"><div class="lbl">Hire Date</div><div class="val">{{ user['hire_date'] }}</div></div>
+            <div class="field"><div class="lbl">Email</div><div class="val">{{ user['email'] }}</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Shortcuts</div>
+    <div class="card-body">
+        <div class="shortcuts">
+            <a class="shortcut" href="{{ url_for('promotions') }}">
+                <span class="icon">★</span> Request Promotion
+            </a>
+            <a class="shortcut" href="{{ url_for('directory') }}">
+                <span class="icon">▦</span> Company Directory
+            </a>
+            <a class="shortcut" href="{{ url_for('profile') }}">
+                <span class="icon">☺</span> My Profile
+            </a>
+            <a class="shortcut" href="{{ url_for('documents') }}">
+                <span class="icon">▤</span> Document Library
+            </a>
+            <a class="shortcut" href="{{ url_for('chat') }}">
+                <span class="icon">✉</span> Company Chat
+            </a>
+            <a class="shortcut" href="{{ url_for('greeting') }}">
+                <span class="icon">✎</span> Custom Greeting
+            </a>
+            <a class="shortcut" href="{{ url_for('admin_panel') }}">
+                <span class="icon">⚙</span> Admin Tools
+            </a>
+            <a class="shortcut" href="{{ url_for('logout') }}">
+                <span class="icon">⏻</span> Sign Out
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="grid cols-2">
+    <div class="card">
+        <div class="card-header">Recent Chat Activity <a href="{{ url_for('chat') }}" style="font-size: 12px; font-weight: normal;">View all</a></div>
+        <div class="card-body">
+            {% if recent_messages %}
+                {% for m in recent_messages %}
+                    <div style="padding: 8px 0; border-bottom: 1px solid var(--border);">
+                        <div style="font-size: 12px;"><strong style="color: var(--purple-dark);">{{ m['username'] }}</strong>
+                            <span class="muted">— {{ m['created_at'][:16].replace('T', ' ') }}</span></div>
+                        <div style="font-size: 13px;">{{ m['message']|safe }}</div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="muted">No recent messages.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">Coworkers <a href="{{ url_for('directory') }}" style="font-size: 12px; font-weight: normal;">Full directory</a></div>
+        <div class="card-body">
+            <table class="data">
+                <thead><tr><th>Name</th><th>Position</th><th>Dept</th></tr></thead>
+                <tbody>
+                {% for c in coworkers %}
+                    <tr>
+                        <td><a href="{{ url_for('employee_detail', user_id=c['id']) }}">{{ c['full_name'] }}</a></td>
+                        <td>{{ c['position'] }}</td>
+                        <td><span class="pill">{{ c['department'] }}</span></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
