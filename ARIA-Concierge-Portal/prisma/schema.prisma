@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  email         String    @unique
+  passwordHash  String
+  fullName      String
+  role          String    @default("guest") // guest | staff | admin
+  rewardsTier   String    @default("Stardust")
+  quantumPoints Int       @default(500)
+  resetToken    String?
+  resetExpires  DateTime?
+  createdAt     DateTime  @default(now())
+
+  bookings      Booking[]
+  reviews       Review[]
+  tickets       SupportTicket[]
+  chats         ChatMessage[]
+}
+
+model Room {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  pricePerNight Int
+  capacity    Int
+  bookings    Booking[]
+}
+
+model Restaurant {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  cuisine     String
+  description String
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  roomId     Int
+  checkIn    DateTime
+  checkOut   DateTime
+  guests     Int      @default(1)
+  status     String   @default("confirmed")
+  notes      String?  // ingested from XML — may contain prompt injection payloads
+  createdAt  DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id])
+  room       Room     @relation(fields: [roomId], references: [id])
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  rating    Int
+  title     String
+  body      String   // ingested into ORB-IT context → indirect prompt injection
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model SupportTicket {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  subject   String
+  body      String   // ORB-IT summarizes → indirect prompt injection vector
+  status    String   @default("open")
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  userId    Int?
+  role      String   // user | model | tool
+  content   String
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  actor     String
+  action    String
+  detail    String
+  createdAt DateTime @default(now())
+}
