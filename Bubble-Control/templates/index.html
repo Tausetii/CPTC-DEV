@@ -15,8 +15,9 @@
     --border: #3d2e10;
     --neon:   #ffd700;
     --neon2:  #b8860b;
-    --dim:    #7a6533;
-    --text:   #f5e8c0;
+    --dim:    #c89a4d;
+    --text:   #f8eccc;
+    --label:  #e0c080;
     --white:  #ffffff;
     --red:    #ff4466;
     --amber:  #ffaa33;
@@ -92,21 +93,218 @@
   .dome-wrap { position: relative; display: block; user-select: none; }
   .dome-svg  { width: 100%; height: auto; display: block; }
 
-  /* Hotel revolve animation */
-  #hotel-revolve {
-    transform-box: fill-box;
-    transform-origin: 50% 100%;
-    animation: revolve 28s ease-in-out infinite;
+  /* Hide flat SVG hotel — replaced by 3D overlay */
+  #hotel-revolve { display: none; }
+
+  /* ── True 3D Hotel overlay ── */
+  .hotel-3d-wrap {
+    position: absolute;
+    left: 50%; top: 62%;
+    width: 460px; height: 340px;
+    margin-left: -230px; margin-top: -170px;
+    perspective: 1400px;
+    pointer-events: none;
+    z-index: 5;
   }
-  @keyframes revolve {
-    0%,100% { transform: perspective(700px) rotateY(-11deg); }
-    50%      { transform: perspective(700px) rotateY(11deg); }
+  .hotel-3d-scene {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-style: preserve-3d;
+    animation: hotelSpin 16s linear infinite;
+  }
+  @keyframes hotelSpin {
+    from { transform: rotateX(-18deg) rotateY(0deg); }
+    to   { transform: rotateX(-18deg) rotateY(360deg); }
+  }
+  .hbld { position: absolute; transform-style: preserve-3d; width: 0; height: 0; }
+  .hface {
+    position: absolute;
+    transform-style: preserve-3d;
+    border: 1px solid #cc9933;
+    box-shadow: inset 0 0 18px rgba(0,0,0,0.5);
+    backface-visibility: visible;
+  }
+  .hface.win {
+    background-color: #2a1d08;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'><rect x='3' y='3' width='6' height='8' fill='%23ffd270' rx='1' opacity='0.9'/></svg>");
+    background-repeat: repeat;
+    background-size: 14px 14px;
+    box-shadow: inset 0 0 18px rgba(0,0,0,0.45), inset 0 0 30px rgba(255,215,0,0.08);
+  }
+  .hface.solid { background: linear-gradient(180deg, #4a3415 0%, #3a2812 60%, #2a1d08 100%); }
+  .hface.top-cap {
+    background: linear-gradient(135deg, #cc9933 0%, #ffd700 50%, #b8860b 100%);
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.35), 0 0 10px rgba(255,215,0,0.55);
+    border-color: #ffd700;
+  }
+
+  /* TOWER — 80×190×60, center at scene (230, 169) */
+  .hbld.tower { left: 230px; top: 169px; }
+  .tower .hface.fF { width: 80px; height: 190px; left: -40px; top: -95px; transform: translateZ(30px); }
+  .tower .hface.fB { width: 80px; height: 190px; left: -40px; top: -95px; transform: rotateY(180deg) translateZ(30px); }
+  .tower .hface.fL { width: 60px; height: 190px; left: -30px; top: -95px; transform: rotateY(-90deg) translateZ(40px); }
+  .tower .hface.fR { width: 60px; height: 190px; left: -30px; top: -95px; transform: rotateY(90deg) translateZ(40px); }
+  .tower .hface.fT { width: 80px; height: 60px; left: -40px; top: -30px; transform: rotateX(90deg) translateZ(95px); }
+  .tower .hface.fBot { width: 80px; height: 60px; left: -40px; top: -30px; transform: rotateX(-90deg) translateZ(95px); }
+
+  /* WING A — 64×130×54, center at scene (135, 199) */
+  .hbld.wing-a { left: 135px; top: 199px; }
+  .wing-a .hface.fF { width: 64px; height: 130px; left: -32px; top: -65px; transform: translateZ(27px); }
+  .wing-a .hface.fB { width: 64px; height: 130px; left: -32px; top: -65px; transform: rotateY(180deg) translateZ(27px); }
+  .wing-a .hface.fL { width: 54px; height: 130px; left: -27px; top: -65px; transform: rotateY(-90deg) translateZ(32px); }
+  .wing-a .hface.fR { width: 54px; height: 130px; left: -27px; top: -65px; transform: rotateY(90deg) translateZ(32px); }
+  .wing-a .hface.fT { width: 64px; height: 54px; left: -32px; top: -27px; transform: rotateX(90deg) translateZ(65px); }
+  .wing-a .hface.fBot { width: 64px; height: 54px; left: -32px; top: -27px; transform: rotateX(-90deg) translateZ(65px); }
+
+  /* WING B — 64×130×54, center at scene (325, 199) */
+  .hbld.wing-b { left: 325px; top: 199px; }
+  .wing-b .hface.fF { width: 64px; height: 130px; left: -32px; top: -65px; transform: translateZ(27px); }
+  .wing-b .hface.fB { width: 64px; height: 130px; left: -32px; top: -65px; transform: rotateY(180deg) translateZ(27px); }
+  .wing-b .hface.fL { width: 54px; height: 130px; left: -27px; top: -65px; transform: rotateY(-90deg) translateZ(32px); }
+  .wing-b .hface.fR { width: 54px; height: 130px; left: -27px; top: -65px; transform: rotateY(90deg) translateZ(32px); }
+  .wing-b .hface.fT { width: 64px; height: 54px; left: -32px; top: -27px; transform: rotateX(90deg) translateZ(65px); }
+  .wing-b .hface.fBot { width: 64px; height: 54px; left: -32px; top: -27px; transform: rotateX(-90deg) translateZ(65px); }
+
+  /* SPIRE — 14×48×14, center at scene (230, 50) */
+  .hbld.spire { left: 230px; top: 50px; }
+  .spire .hface.fF { width: 14px; height: 48px; left: -7px; top: -24px; transform: translateZ(7px); }
+  .spire .hface.fB { width: 14px; height: 48px; left: -7px; top: -24px; transform: rotateY(180deg) translateZ(7px); }
+  .spire .hface.fL { width: 14px; height: 48px; left: -7px; top: -24px; transform: rotateY(-90deg) translateZ(7px); }
+  .spire .hface.fR { width: 14px; height: 48px; left: -7px; top: -24px; transform: rotateY(90deg) translateZ(7px); }
+  .spire .hface.fT { width: 14px; height: 14px; left: -7px; top: -7px; transform: rotateX(90deg) translateZ(24px); }
+
+  /* PLATFORM — circular disc built from elliptical caps + 24-segment ring */
+  .hbld.plat { left: 230px; top: 268px; }
+  .plat-cap {
+    position: absolute;
+    width: 360px; height: 240px;
+    left: -180px; top: -120px;
+    border-radius: 50%;
+    border: 2px solid #ffd700;
+    box-sizing: border-box;
+  }
+  .plat-cap.top {
+    background:
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(255,215,0,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse at center, #4a3415 0%, #3a2812 35%, #2a1d08 75%, #1a1208 100%);
+    box-shadow: inset 0 0 36px rgba(0,0,0,0.65), 0 0 28px rgba(255,215,0,0.55);
+    transform: rotateX(90deg) translateZ(4px);
+  }
+  .plat-cap.bot {
+    background: radial-gradient(ellipse at center, #2a1d08 0%, #0a0805 100%);
+    box-shadow: inset 0 0 24px rgba(0,0,0,0.8);
+    transform: rotateX(-90deg) translateZ(4px);
+  }
+  .plat-seg {
+    position: absolute;
+    height: 8px;
+    top: -4px;
+    background: linear-gradient(180deg, #ffd700 0%, #cc9933 50%, #b8860b 100%);
+    border-top: 1px solid #ffe88a;
+    border-bottom: 1px solid #7a4f0a;
+    box-shadow: 0 0 6px rgba(255,215,0,0.5);
+  }
+
+  /* Hotel front sign */
+  .hotel-sign-mount {
+    position: absolute;
+    left: 50%; bottom: 14px;
+    transform: translateX(-50%) translateZ(2px);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .hotel-sign {
+    background: linear-gradient(180deg, rgba(20,12,4,0.95) 0%, rgba(40,28,8,0.95) 100%);
+    border: 2px solid #ffd700;
+    border-radius: 3px;
+    padding: 4px 9px 5px;
+    text-align: center;
+    white-space: nowrap;
+    font-family: 'Share Tech Mono', monospace;
+    box-shadow: 0 0 10px rgba(255,215,0,0.75), 0 0 22px rgba(255,215,0,0.35), inset 0 0 8px rgba(255,215,0,0.18);
+  }
+  .hsign-l1 {
+    font-size: 11px; color: #ffd700; letter-spacing: 1.6px; font-weight: bold;
+    text-shadow: 0 0 6px #ffd700, 0 0 12px rgba(255,215,0,0.8);
+  }
+  .hsign-l2 {
+    font-size: 7px; color: #ffe88a; letter-spacing: 2px; margin-top: 2px;
+    text-shadow: 0 0 4px rgba(255,232,138,0.8);
+  }
+  /* Sign-LED accent */
+  .hsign-led {
+    display: inline-block; width: 4px; height: 4px; border-radius: 50%;
+    background: #ff4466; box-shadow: 0 0 4px #ff4466;
+    vertical-align: middle; margin: 0 4px;
+    animation: blink-badge 1.2s step-end infinite;
+  }
+
+  /* Beacon glowing sphere */
+  .beacon3d { position: absolute; left: 230px; top: 16px; width: 0; height: 0; transform-style: preserve-3d; }
+  .beacon3d::before {
+    content: ''; position: absolute;
+    left: -11px; top: -11px; width: 22px; height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ffd700 45%, #cc9933 100%);
+    box-shadow: 0 0 16px #ffd700, 0 0 32px rgba(255,215,0,0.7), 0 0 56px rgba(255,215,0,0.45);
+    animation: beacon3dPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes beacon3dPulse {
+    0%,100% { box-shadow: 0 0 14px #ffd700, 0 0 24px rgba(255,215,0,0.5), 0 0 44px rgba(255,215,0,0.3); transform: scale(0.85); }
+    50%      { box-shadow: 0 0 24px #ffd700, 0 0 44px rgba(255,215,0,0.95), 0 0 78px rgba(255,215,0,0.55);  transform: scale(1.15); }
+  }
+  /* Red warning beacon */
+  .beacon3d-red { position: absolute; left: 230px; top: 34px; width: 0; height: 0; }
+  .beacon3d-red::before {
+    content: ''; position: absolute;
+    left: -5px; top: -5px; width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ff4466;
+    box-shadow: 0 0 12px #ff4466, 0 0 24px rgba(255,68,102,0.7);
+    animation: blink-badge 1s step-end infinite;
+  }
+
+  /* 3D zone hotspot pip (visual marker only — actual hover handled by the dome-overlay .zone-hot whose position is JS-tracked) */
+  .pip-3d {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 12px; height: 12px; margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: #ffd700;
+    box-shadow: 0 0 10px #ffd700, 0 0 22px rgba(255,215,0,0.6), inset 0 0 4px rgba(255,255,255,0.6);
+    border: 1px solid #fff8d6;
+    animation: pip-pulse 2s ease-in-out infinite;
+    transform: translateZ(3px);
+    pointer-events: none;
+  }
+  /* Hotel shadow under base */
+  #hotel-shadow { animation: shadowPulse 18s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+  @keyframes shadowPulse {
+    0%,100% { transform: scaleX(0.85); opacity: 0.55; }
+    25%,75%  { transform: scaleX(1.05); opacity: 0.4; }
+    50%      { transform: scaleX(0.85); opacity: 0.55; }
   }
   /* Subtle float for whole dome */
   #dome-float { animation: domeFloat 7s ease-in-out infinite; }
   @keyframes domeFloat {
     0%,100% { transform: translateY(0px); }
-    50%      { transform: translateY(-5px); }
+    50%      { transform: translateY(-6px); }
+  }
+  /* Beacon strobe */
+  .beacon-strobe { animation: beaconFlash 1.4s ease-in-out infinite; }
+  @keyframes beaconFlash {
+    0%,100% { opacity: 0.45; transform: scale(0.85); }
+    50%      { opacity: 1;    transform: scale(1.15); }
+  }
+  /* Window flicker layer */
+  .window-flicker { animation: winFlicker 5.2s steps(20,end) infinite; }
+  @keyframes winFlicker {
+    0%,100% { opacity: 0.95; }
+    8%       { opacity: 0.7; }
+    16%     { opacity: 1; }
+    34%     { opacity: 0.85; }
+    62%     { opacity: 0.78; }
+    78%     { opacity: 1; }
   }
 
   /* ── Zone hotspots ── */
@@ -243,6 +441,88 @@
   .access-denied h2 { font-size: 16px; letter-spacing: 4px; color: var(--neon); text-transform: uppercase; text-shadow: 0 0 12px rgba(255,215,0,0.5); }
   .access-denied p { font-size: 12px; color: var(--dim); letter-spacing: 1px; line-height: 1.8; max-width: 380px; }
   .access-denied .role-badge { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid var(--border); color: var(--dim); padding: 4px 12px; margin-top: 4px; }
+
+  /* ── ICS instruments ── */
+  .ics-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    background: var(--panel2); border: 1px solid var(--border);
+    margin-bottom: 16px; overflow: hidden;
+  }
+  .ics-bar-cell { padding: 14px 18px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+  .ics-bar-cell:last-child { border-right: none; }
+  .ics-bar-label { font-size: 10px; letter-spacing: 2px; color: var(--label); text-transform: uppercase; font-weight: bold; }
+  .ics-bar-value { font-size: 18px; color: var(--neon); letter-spacing: 1px; text-shadow: 0 0 8px rgba(255,215,0,0.5); display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; }
+  .ics-bar-value.crit { color: var(--red); text-shadow: 0 0 8px rgba(255,68,102,0.6); }
+  .ics-bar-value.warn { color: var(--amber); text-shadow: 0 0 8px rgba(255,170,51,0.6); }
+
+  /* LEDs */
+  .led { display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+         box-shadow: inset 0 0 4px rgba(0,0,0,0.7), 0 0 8px currentColor; flex-shrink: 0; }
+  .led.green  { color: #33dd66; background: #33dd66; }
+  .led.orange { color: #ff8833; background: #ff8833; }
+  .led.yellow { color: #ffe833; background: #ffe833; }
+  .led.red    { color: #ff4466; background: #ff4466; animation: blink-badge 0.9s step-end infinite; }
+
+  /* Panel container with floating header */
+  .gauge-panel, .trend-card {
+    background: var(--panel2); border: 1px solid var(--border);
+    padding: 22px 16px 16px; margin-bottom: 16px; position: relative;
+  }
+  .panel-header {
+    position: absolute; top: -8px; left: 14px;
+    background: var(--panel); padding: 0 8px;
+    font-size: 10px; letter-spacing: 3px; color: var(--neon); text-transform: uppercase;
+    font-weight: bold; text-shadow: 0 0 6px rgba(255,215,0,0.5);
+  }
+  .panel-header .blink-dot {
+    display: inline-block; width: 6px; height: 6px; background: #33dd66;
+    border-radius: 50%; margin-right: 6px; box-shadow: 0 0 6px #33dd66;
+    animation: blink-badge 1.2s step-end infinite; vertical-align: middle;
+  }
+
+  /* Gauge row */
+  .gauge-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .gauge-cell {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: rgba(0,0,0,0.35); border: 1px solid var(--border); padding: 10px 6px;
+  }
+  .gauge-svg { width: 100%; max-width: 140px; height: auto; }
+  .gauge-cell-name { font-size: 10px; letter-spacing: 1.5px; color: var(--label); text-transform: uppercase; margin-top: 4px; text-align: center; font-weight: bold; }
+
+  /* Trend chart */
+  .trend-svg { width: 100%; height: 240px; display: block; background: rgba(0,0,0,0.5); border: 1px solid var(--border); }
+  .trend-legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 11px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; color: var(--text); letter-spacing: 1px; font-weight: bold; }
+  .legend-swatch { width: 18px; height: 2px; }
+
+  /* Sparkline trend in zone card */
+  .spark-wrap {
+    position: relative; width: 100%; height: 56px;
+    background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+    margin: 8px 0 10px; overflow: hidden;
+  }
+  .spark-grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,215,0,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,215,0,0.05) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+  .spark-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .spark-label { position: absolute; top: 4px; left: 6px; font-size: 9px; letter-spacing: 1.5px; color: var(--label); text-transform: uppercase; z-index: 2; font-weight: bold; }
+
+  /* Metric tiles */
+  .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 8px 0 10px; }
+  .metric { background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 6px 8px; }
+  .metric-label { font-size: 9px; letter-spacing: 1.5px; color: var(--label); text-transform: uppercase; font-weight: bold; }
+  .metric-value { font-size: 16px; color: var(--text); font-family: 'Share Tech Mono', monospace; font-weight: bold; }
+
+  /* Segment-style readout */
+  .segment {
+    font-family: 'Share Tech Mono', monospace; letter-spacing: 2px;
+    background: rgba(0,0,0,0.6); border: 1px solid var(--border);
+    padding: 6px 12px; display: inline-block; text-shadow: 0 0 8px currentColor;
+  }
 
   /* ── Utility ── */
   .section-title { font-size: 11px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
@@ -394,6 +674,100 @@
             <circle cx="0" cy="0" r="4"  fill="rgba(255,215,0,0.3)" filter="url(#glow)"/>
           </g>
 
+          <!-- ─── Big rocket pass (left → right) ─── -->
+          <g>
+            <g transform="translate(-100,100)">
+              <ellipse cx="0" cy="0" rx="16" ry="4" fill="#cc9933"/>
+              <ellipse cx="2" cy="-1" rx="10" ry="2" fill="#ffd700" opacity="0.5"/>
+              <path d="M 14,0 L 24,-3 L 30,0 L 24,3 Z" fill="#ffd700" filter="url(#glow)"/>
+              <circle cx="-2" cy="0" r="2" fill="rgba(255,255,255,0.95)" filter="url(#glow)"/>
+              <rect x="-16" y="-4" width="3" height="8" fill="#b8860b"/>
+              <rect x="-13" y="-5" width="2" height="2" fill="#b8860b"/>
+              <rect x="-13" y="3" width="2" height="2" fill="#b8860b"/>
+              <!-- engine flame -->
+              <ellipse cx="-19" cy="0" rx="7" ry="2.5" fill="rgba(255,180,40,0.9)" filter="url(#glow2)">
+                <animate attributeName="rx" values="6;10;6" dur="0.5s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values="0.9;0.55;0.9" dur="0.5s" repeatCount="indefinite"/>
+              </ellipse>
+              <ellipse cx="-21" cy="0" rx="4" ry="1.5" fill="rgba(255,255,255,0.95)">
+                <animate attributeName="rx" values="3;5;3" dur="0.5s" repeatCount="indefinite"/>
+              </ellipse>
+              <animateTransform attributeName="transform" type="translate"
+                values="-100,100; 900,60" dur="20s" repeatCount="indefinite"/>
+            </g>
+          </g>
+
+          <!-- ─── Small craft (right → left, slower) ─── -->
+          <g>
+            <g transform="translate(900,180)">
+              <ellipse cx="0" cy="0" rx="10" ry="2.5" fill="#7a6533"/>
+              <path d="M -10,0 L -16,-2 L -20,0 L -16,2 Z" fill="#cc9933"/>
+              <ellipse cx="6" cy="0" rx="4" ry="1.5" fill="rgba(255,235,150,0.85)" filter="url(#glow)"/>
+              <circle cx="14" cy="0" r="1.6" fill="rgba(255,68,102,0.9)" filter="url(#glow)">
+                <animate attributeName="opacity" values="1;0.3;1" dur="0.9s" repeatCount="indefinite"/>
+              </circle>
+              <animateTransform attributeName="transform" type="translate"
+                values="900,180; -100,210" dur="28s" begin="4s" repeatCount="indefinite"/>
+            </g>
+          </g>
+
+          <!-- ─── Tiny background shuttle ─── -->
+          <g opacity="0.7">
+            <g transform="translate(-60,40)">
+              <ellipse cx="0" cy="0" rx="6" ry="1.5" fill="#b8860b"/>
+              <ellipse cx="-7" cy="0" rx="2" ry="1" fill="rgba(255,180,40,0.9)" filter="url(#glow)"/>
+              <animateTransform attributeName="transform" type="translate"
+                values="-60,40; 880,260" dur="34s" begin="10s" repeatCount="indefinite"/>
+            </g>
+          </g>
+
+          <!-- ─── Comets / shooting stars ─── -->
+          <g>
+            <g>
+              <line x1="0" y1="0" x2="-28" y2="-5" stroke="rgba(255,215,0,0.85)" stroke-width="1.6" stroke-linecap="round"/>
+              <line x1="0" y1="0" x2="-16" y2="-3" stroke="rgba(255,255,255,0.95)" stroke-width="1.2" stroke-linecap="round"/>
+              <circle r="2" fill="#ffffff" filter="url(#glow)"/>
+              <animateMotion path="M 860,30 L -60,260" dur="6s" repeatCount="indefinite"/>
+            </g>
+            <g>
+              <line x1="0" y1="0" x2="-22" y2="4" stroke="rgba(255,215,0,0.7)" stroke-width="1.3" stroke-linecap="round"/>
+              <line x1="0" y1="0" x2="-12" y2="2" stroke="rgba(255,255,255,0.85)" stroke-width="1" stroke-linecap="round"/>
+              <circle r="1.6" fill="#ffffff" filter="url(#glow)"/>
+              <animateMotion path="M -60,80 L 880,310" dur="9s" begin="2.5s" repeatCount="indefinite"/>
+            </g>
+            <g>
+              <line x1="0" y1="0" x2="-20" y2="-3" stroke="rgba(255,235,150,0.85)" stroke-width="1.2" stroke-linecap="round"/>
+              <circle r="1.4" fill="#ffffff" filter="url(#glow)"/>
+              <animateMotion path="M 880,180 L -40,40" dur="7.5s" begin="5s" repeatCount="indefinite"/>
+            </g>
+            <g>
+              <line x1="0" y1="0" x2="-14" y2="-2" stroke="rgba(255,255,255,0.75)" stroke-width="1" stroke-linecap="round"/>
+              <circle r="1" fill="#ffffff" filter="url(#glow)"/>
+              <animateMotion path="M -40,140 L 880,40" dur="11s" begin="1s" repeatCount="indefinite"/>
+            </g>
+            <g>
+              <line x1="0" y1="0" x2="-52" y2="-12" stroke="rgba(255,235,150,0.6)" stroke-width="0.8"/>
+              <circle r="1.5" fill="#ffffff" filter="url(#glow2)"/>
+              <animateMotion path="M 880,18 L 60,220" dur="2.2s" begin="9s" repeatCount="indefinite"/>
+            </g>
+          </g>
+
+          <!-- ─── Orbiting satellite ─── -->
+          <g transform="translate(400,200)">
+            <g>
+              <g>
+                <rect x="-3" y="-1.5" width="6" height="3" fill="#cc9933"/>
+                <rect x="-9" y="-0.8" width="5" height="1.6" fill="#7a6533"/>
+                <rect x="4" y="-0.8" width="5" height="1.6" fill="#7a6533"/>
+                <circle r="1" fill="rgba(255,215,0,0.95)" filter="url(#glow)">
+                  <animate attributeName="opacity" values="1;0.4;1" dur="1.6s" repeatCount="indefinite"/>
+                </circle>
+              </g>
+              <animateMotion path="M 250,0 A 250,80 0 1,1 -250,0 A 250,80 0 1,1 250,0"
+                             dur="32s" repeatCount="indefinite" rotate="auto"/>
+            </g>
+          </g>
+
           <!-- Soft gold halo behind dome -->
           <ellipse cx="400" cy="300" rx="290" ry="220" fill="rgba(200,160,50,0.07)" filter="url(#softGlow)"/>
 
@@ -426,6 +800,9 @@
             </ellipse>
             <circle cx="512" cy="332" r="4" fill="rgba(255,215,80,0.7)" filter="url(#glow)"/>
 
+            <!-- Hotel ground shadow (pulses with rotation) -->
+            <ellipse id="hotel-shadow" cx="400" cy="356" rx="120" ry="10" fill="rgba(0,0,0,0.7)" filter="url(#glow)"/>
+
             <!-- ═══ Animated hotel group ═══ -->
             <g id="hotel-revolve">
               <!-- Scale 0.76 around the ground center (400,354) to fit inside dome -->
@@ -433,23 +810,24 @@
 
               <!-- Wing A (left) -->
               <rect x="228" y="218" width="115" height="136" fill="url(#wingGrad)" rx="1"/>
-              <rect x="228" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
+              <rect class="window-flicker" x="228" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
               <rect x="228" y="214" width="115" height="5" fill="#cc9933" filter="url(#glow)"/>
 
               <!-- Wing B (right) -->
               <rect x="457" y="218" width="115" height="136" fill="url(#wingGrad)" rx="1"/>
-              <rect x="457" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
+              <rect class="window-flicker" style="animation-delay:1.3s" x="457" y="218" width="115" height="136" fill="url(#winWing)"  opacity="0.9"/>
               <rect x="457" y="214" width="115" height="5" fill="#cc9933" filter="url(#glow)"/>
 
               <!-- Main tower -->
               <rect x="343" y="102" width="114" height="252" fill="url(#towerGrad)" rx="1"/>
-              <rect x="343" y="102" width="114" height="252" fill="url(#winTower)"  opacity="0.95"/>
+              <rect class="window-flicker" style="animation-delay:0.6s" x="343" y="102" width="114" height="252" fill="url(#winTower)"  opacity="0.95"/>
               <!-- Tower neon top bar -->
               <rect x="343" y="98"  width="114" height="5" fill="#ffd700" filter="url(#glow)"/>
               <!-- Tower central glow strip -->
               <rect x="393" y="102" width="14"  height="218" fill="rgba(220,180,60,0.25)" filter="url(#glow)"/>
               <!-- Tower spire -->
               <rect x="396" y="76"  width="8"   height="26" fill="#b8860b" rx="1"/>
+              <circle class="beacon-strobe" cx="400" cy="71" r="6" fill="#ff4466" filter="url(#glow2)" transform-origin="400 71"/>
               <circle cx="400" cy="71" r="5" fill="#ffd700" filter="url(#glow2)">
                 <animate attributeName="opacity" values="1;0.3;1" dur="1.9s" repeatCount="indefinite"/>
               </circle>
@@ -545,6 +923,58 @@
           </g>
 
         </svg>
+
+        <!-- ─── True 3D Hotel (CSS) ─── -->
+        <div class="hotel-3d-wrap" id="hotel3dWrap">
+          <div class="hotel-3d-scene" id="hotel3dScene">
+            <div class="hbld plat" id="platRing">
+              <div class="plat-cap bot"></div>
+              <div class="plat-cap top"></div>
+              <!-- segment ring is generated by JS into #platRing -->
+            </div>
+            <div class="hbld wing-a">
+              <div class="hface fF win"><div class="pip-3d"></div></div>
+              <div class="hface fB win"></div>
+              <div class="hface fL win"></div>
+              <div class="hface fR win"></div>
+              <div class="hface fT top-cap"></div>
+              <div class="hface fBot solid"></div>
+            </div>
+            <div class="hbld wing-b">
+              <div class="hface fF win"><div class="pip-3d"></div></div>
+              <div class="hface fB win"></div>
+              <div class="hface fL win"></div>
+              <div class="hface fR win"></div>
+              <div class="hface fT top-cap"></div>
+              <div class="hface fBot solid"></div>
+            </div>
+            <div class="hbld tower">
+              <div class="hface fF win">
+                <div class="pip-3d" style="top:22%"></div>
+                <div class="hotel-sign-mount">
+                  <div class="hotel-sign">
+                    <div class="hsign-l1"><span class="hsign-led"></span>THE WORMHOLE<span class="hsign-led"></span></div>
+                    <div class="hsign-l2">RESORT &amp; CASINO</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hface fB win"></div>
+              <div class="hface fL win"></div>
+              <div class="hface fR win"></div>
+              <div class="hface fT top-cap"></div>
+              <div class="hface fBot solid"></div>
+            </div>
+            <div class="hbld spire">
+              <div class="hface fF solid"></div>
+              <div class="hface fB solid"></div>
+              <div class="hface fL solid"></div>
+              <div class="hface fR solid"></div>
+              <div class="hface fT top-cap"></div>
+            </div>
+            <div class="beacon3d-red"></div>
+            <div class="beacon3d"></div>
+          </div>
+        </div>
 
         <!-- ─── Zone hotspot overlays ─── -->
         <!-- Casino Floor: SVG(400,342) → 50%, 81.4% -->
@@ -684,9 +1114,34 @@
   <div class="tab-pane" id="tab-monitoring">
     {% if is_admin %}
     <div class="section-title">
-      Oxygen Level Monitoring
+      Oxygen Level Monitoring · HMI
       <button class="refresh-btn" onclick="loadOxygen()">↻ Refresh</button>
     </div>
+
+    <!-- System status bar -->
+    <div class="ics-bar">
+      <div class="ics-bar-cell"><div class="ics-bar-label">Plant Status</div><div class="ics-bar-value" id="plantStatus"><span class="led green"></span>NOMINAL</div></div>
+      <div class="ics-bar-cell"><div class="ics-bar-label">Active Zones</div><div class="ics-bar-value" id="plantZones">5 / 5</div></div>
+      <div class="ics-bar-cell"><div class="ics-bar-label">Mean O₂</div><div class="ics-bar-value" id="plantMean">—</div></div>
+      <div class="ics-bar-cell"><div class="ics-bar-label">Active Alarms</div><div class="ics-bar-value" id="plantAlarms">0</div></div>
+    </div>
+
+    <!-- Gauge row -->
+    <div class="gauge-panel">
+      <div class="panel-header"><span class="blink-dot"></span>Zone Gauges · Real-time</div>
+      <div class="gauge-row" id="gaugeRow">
+        <div style="grid-column: 1/-1; color: var(--dim); font-size: 12px; text-align:center; padding: 20px;">Loading instrumentation…</div>
+      </div>
+    </div>
+
+    <!-- System trend chart -->
+    <div class="trend-card">
+      <div class="panel-header"><span class="blink-dot"></span>System Trend · O₂ vs Time</div>
+      <svg class="trend-svg" id="trendChart" viewBox="0 0 1100 240" preserveAspectRatio="none"></svg>
+      <div class="trend-legend" id="trendLegend"></div>
+    </div>
+
+    <!-- Per-zone detail cards -->
     <div class="zone-grid" id="zoneGrid">
       <div style="color:var(--dim);font-size:12px;letter-spacing:1px">Loading zone data…</div>
     </div>
@@ -800,7 +1255,7 @@ async function confirmToggle() {
   bubbleActive = data.active; updateBubbleUI();
 }
 
-// ── Zone O2 data (feeds both dome tooltips and monitoring tab) ────────────────
+// ── Zone O2 data (feeds dome, gauges, charts) ─────────────────────────────────
 function barColor(level) {
   if (level >= 85) return '#33dd66';
   if (level >= 70) return '#ff8833';
@@ -819,12 +1274,44 @@ function monBadgeClass(badge) {
   if (badge === 'Getting Low') return 'badge-getting badge';
   return 'badge-danger badge';
 }
+function ledClassForLevel(level) {
+  if (level >= 85) return 'green';
+  if (level >= 70) return 'orange';
+  if (level >= 55) return 'yellow';
+  return 'red';
+}
+
+const ZONE_ORDER = ['casino_floor', 'hotel_wing_a', 'hotel_wing_b', 'observation_deck', 'engine_bay'];
+const ZONE_LINE_COLORS = {
+  casino_floor:     '#33dd66',
+  hotel_wing_a:     '#ff8833',
+  hotel_wing_b:     '#ffe833',
+  observation_deck: '#ffd700',
+  engine_bay:       '#ff4466',
+};
+const MAX_HISTORY = 30;
+const zoneHistory = {
+  casino_floor: [], hotel_wing_a: [], hotel_wing_b: [], observation_deck: [], engine_bay: [],
+};
+
+function recordHistory(zones) {
+  zones.forEach(z => {
+    const h = zoneHistory[z.id];
+    if (h) { h.push(z.level); if (h.length > MAX_HISTORY) h.shift(); }
+  });
+}
 
 async function fetchZoneData() {
   const data = await fetch('/api/oxygen').then(r => r.json());
   zoneData = {};
   data.zones.forEach(z => { zoneData[z.id] = z; });
+  recordHistory(data.zones);
   updateDomeTooltips();
+  const monTab = document.getElementById('tab-monitoring');
+  if (monTab && monTab.classList.contains('active')) {
+    updateInstruments();
+    updateZoneCardValues();
+  }
 }
 
 function updateDomeTooltips() {
@@ -852,31 +1339,220 @@ function updateDomeTooltips() {
   });
 }
 
+// ── Gauge SVG ────────────────────────────────────────────────────────────────
+function renderGauge(level) {
+  const cx = 70, cy = 75, r = 55;
+  const p = Math.max(0, Math.min(1, level / 100));
+  const theta = p * Math.PI;
+  const tipX = cx - r * Math.cos(theta);
+  const tipY = cy - r * Math.sin(theta);
+  const fillLarge = p > 0.5 ? 1 : 0;
+  const color = barColor(level);
+
+  let ticks = '';
+  for (let i = 0; i <= 4; i++) {
+    const tp = i / 4, th = tp * Math.PI;
+    const x1 = cx - r * Math.cos(th), y1 = cy - r * Math.sin(th);
+    const x2 = cx - (r - 8) * Math.cos(th), y2 = cy - (r - 8) * Math.sin(th);
+    ticks += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#b8956a" stroke-width="1.2"/>`;
+    const lx = cx - (r + 10) * Math.cos(th);
+    const ly = cy - (r + 10) * Math.sin(th) + 3;
+    ticks += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" fill="#f8eccc" font-size="9" font-weight="bold" font-family="Share Tech Mono, monospace">${tp * 100}</text>`;
+  }
+
+  const fillPath = p > 0
+    ? `<path d="M ${cx - r},${cy} A ${r},${r} 0 ${fillLarge},0 ${tipX.toFixed(1)},${tipY.toFixed(1)}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round"/>`
+    : '';
+
+  return `
+    <svg class="gauge-svg" viewBox="0 0 140 105">
+      <path d="M ${cx - r},${cy} A ${r},${r} 0 0,0 ${cx + r},${cy}" fill="none" stroke="#3d2e10" stroke-width="8"/>
+      ${fillPath}
+      ${ticks}
+      <line x1="${cx}" y1="${cy}" x2="${tipX.toFixed(1)}" y2="${tipY.toFixed(1)}" stroke="#f5e8c0" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="${cx}" cy="${cy}" r="4" fill="#ffd700"/>
+      <text x="${cx}" y="${cy + 24}" text-anchor="middle" fill="${color}" font-size="17" font-weight="bold" font-family="Share Tech Mono, monospace" letter-spacing="1" style="filter: drop-shadow(0 0 4px ${color})">${level}%</text>
+    </svg>
+  `;
+}
+
+// ── Sparkline SVG ────────────────────────────────────────────────────────────
+function renderSparkline(history, color) {
+  const w = 280, h = 56;
+  if (!history || history.length < 2) {
+    return `<svg class="spark-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"></svg>`;
+  }
+  const data = history.slice(-MAX_HISTORY);
+  const step = w / (MAX_HISTORY - 1);
+  const offsetX = (MAX_HISTORY - data.length) * step;
+  const pts = data.map((v, i) => `${(offsetX + i * step).toFixed(1)},${(h - (v / 100) * h).toFixed(1)}`);
+  const line = pts.join(' ');
+  const lastX = pts[pts.length - 1].split(',')[0];
+  const area = `${line} ${lastX},${h} ${offsetX.toFixed(1)},${h}`;
+  return `
+    <svg class="spark-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+      <polyline points="${area}" fill="${color}" fill-opacity="0.18" stroke="none"/>
+      <polyline points="${line}" fill="none" stroke="${color}" stroke-width="1.5"/>
+    </svg>
+  `;
+}
+
+// ── Trend chart SVG (all zones) ──────────────────────────────────────────────
+function renderTrend() {
+  const chart = document.getElementById('trendChart');
+  if (!chart) return;
+  const W = 1100, H = 240;
+  const pad = { l: 36, r: 16, t: 12, b: 22 };
+  const w = W - pad.l - pad.r, h = H - pad.t - pad.b;
+  let svg = '';
+  for (let i = 0; i <= 4; i++) {
+    const v = i * 25, y = pad.t + h - (v / 100) * h;
+    svg += `<line x1="${pad.l}" y1="${y}" x2="${pad.l + w}" y2="${y}" stroke="#6a5022" stroke-width="1" stroke-dasharray="3 4"/>`;
+    svg += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end" fill="#f8eccc" font-size="11" font-weight="bold" font-family="Share Tech Mono, monospace">${v}</text>`;
+  }
+  // Vertical gridlines every 5 points
+  const step = w / (MAX_HISTORY - 1);
+  for (let i = 0; i < MAX_HISTORY; i += 5) {
+    const x = pad.l + i * step;
+    svg += `<line x1="${x}" y1="${pad.t}" x2="${x}" y2="${pad.t + h}" stroke="#6a5022" stroke-width="1" stroke-dasharray="2 4" opacity="0.6"/>`;
+  }
+  svg += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${pad.t + h}" stroke="#b8956a" stroke-width="1.4"/>`;
+  svg += `<line x1="${pad.l}" y1="${pad.t + h}" x2="${pad.l + w}" y2="${pad.t + h}" stroke="#b8956a" stroke-width="1.4"/>`;
+  svg += `<text x="${pad.l}" y="${pad.t + h + 17}" text-anchor="start" fill="#e0c080" font-size="10" font-weight="bold" font-family="Share Tech Mono, monospace">T-${MAX_HISTORY * 10}s</text>`;
+  svg += `<text x="${pad.l + w}" y="${pad.t + h + 17}" text-anchor="end" fill="#e0c080" font-size="10" font-weight="bold" font-family="Share Tech Mono, monospace">NOW</text>`;
+
+  ZONE_ORDER.forEach(zid => {
+    const hist = zoneHistory[zid] || [];
+    if (hist.length < 2) return;
+    const offsetX = pad.l + (MAX_HISTORY - hist.length) * step;
+    const pts = hist.map((v, i) => `${(offsetX + i * step).toFixed(1)},${(pad.t + h - (v / 100) * h).toFixed(1)}`).join(' ');
+    svg += `<polyline points="${pts}" fill="none" stroke="${ZONE_LINE_COLORS[zid]}" stroke-width="1.6"/>`;
+    // last-point dot
+    const last = hist[hist.length - 1];
+    const lx = pad.l + (MAX_HISTORY - 1) * step;
+    const ly = pad.t + h - (last / 100) * h;
+    svg += `<circle cx="${lx}" cy="${ly}" r="2.5" fill="${ZONE_LINE_COLORS[zid]}"/>`;
+  });
+  chart.innerHTML = svg;
+
+  const legend = ZONE_ORDER.map(zid => {
+    const z = zoneData[zid];
+    const name = z ? z.name : zid;
+    return `<div class="legend-item"><div class="legend-swatch" style="background:${ZONE_LINE_COLORS[zid]}"></div>${name}</div>`;
+  }).join('');
+  const legEl = document.getElementById('trendLegend');
+  if (legEl) legEl.innerHTML = legend;
+}
+
+// ── Status bar ───────────────────────────────────────────────────────────────
+function updateStatusBar() {
+  const zones = Object.values(zoneData);
+  if (!zones.length) return;
+  const dangerCount = zones.filter(z => z.level < 55).length;
+  const warnCount   = zones.filter(z => z.level >= 55 && z.level < 70).length;
+  const mean = (zones.reduce((s, z) => s + z.level, 0) / zones.length).toFixed(1);
+
+  const statusEl = document.getElementById('plantStatus');
+  const meanEl   = document.getElementById('plantMean');
+  const alarmEl  = document.getElementById('plantAlarms');
+  const zonesEl  = document.getElementById('plantZones');
+  if (statusEl) {
+    if (dangerCount > 0)      { statusEl.className = 'ics-bar-value crit'; statusEl.innerHTML = '<span class="led red"></span>CRITICAL'; }
+    else if (warnCount > 0)   { statusEl.className = 'ics-bar-value warn'; statusEl.innerHTML = '<span class="led yellow"></span>DEGRADED'; }
+    else                      { statusEl.className = 'ics-bar-value';      statusEl.innerHTML = '<span class="led green"></span>NOMINAL'; }
+  }
+  if (meanEl)  meanEl.textContent = mean + '%';
+  if (alarmEl) {
+    alarmEl.textContent = (dangerCount + warnCount);
+    alarmEl.className = 'ics-bar-value' + (dangerCount > 0 ? ' crit' : (warnCount > 0 ? ' warn' : ''));
+  }
+  if (zonesEl) zonesEl.textContent = zones.length + ' / 5';
+}
+
+function updateInstruments() {
+  const row = document.getElementById('gaugeRow');
+  if (row) {
+    row.innerHTML = '';
+    ZONE_ORDER.forEach(zid => {
+      const z = zoneData[zid]; if (!z) return;
+      const cell = document.createElement('div');
+      cell.className = 'gauge-cell';
+      cell.innerHTML = renderGauge(z.level) + `<div class="gauge-cell-name">${z.name}</div>`;
+      row.appendChild(cell);
+    });
+  }
+  renderTrend();
+  updateStatusBar();
+}
+
+function updateZoneCardValues() {
+  Object.values(zoneData).forEach(z => {
+    const big = document.getElementById('zbig-' + z.id);
+    if (!big) return;
+    const c = barColor(z.level);
+    big.textContent = z.level + '%';
+    big.style.color = c;
+    const bar = document.getElementById('zfullbar-' + z.id);
+    if (bar) { bar.style.width = z.level + '%'; bar.style.background = c; }
+    const led = document.getElementById('zled-' + z.id);
+    if (led) led.className = 'led ' + ledClassForLevel(z.level);
+    const spk = document.getElementById('zspark-' + z.id);
+    if (spk) spk.innerHTML = renderSparkline(zoneHistory[z.id] || [], c);
+    const badge = document.getElementById('zhdr-badge-' + z.id);
+    if (badge) { badge.className = monBadgeClass(z.badge); badge.textContent = z.badge; }
+    const hist = zoneHistory[z.id] || [];
+    if (hist.length) {
+      const mn = document.getElementById('zmin-' + z.id);
+      const mx = document.getElementById('zmax-' + z.id);
+      const av = document.getElementById('zavg-' + z.id);
+      if (mn) mn.textContent = Math.min(...hist) + '%';
+      if (mx) mx.textContent = Math.max(...hist) + '%';
+      if (av) av.textContent = (hist.reduce((a,b)=>a+b,0)/hist.length).toFixed(1) + '%';
+    }
+  });
+}
+
 // ── Monitoring tab ────────────────────────────────────────────────────────────
 async function loadOxygen() {
   const data = await fetch('/api/oxygen').then(r => r.json());
   zoneData = {};
   data.zones.forEach(z => { zoneData[z.id] = z; });
+  recordHistory(data.zones);
   updateDomeTooltips();
+  updateInstruments();
 
   const grid = document.getElementById('zoneGrid');
   grid.innerHTML = '';
   data.zones.forEach(z => {
+    const c = barColor(z.level);
+    const hist = zoneHistory[z.id] || [];
     const card = document.createElement('div');
     card.className = 'zone-card';
     card.innerHTML = `
       <div class="zone-header">
-        <div class="zone-name">${z.name}</div>
-        <div class="${monBadgeClass(z.badge)}">${z.badge}</div>
+        <div class="zone-name"><span class="led ${ledClassForLevel(z.level)}" id="zled-${z.id}" style="margin-right:8px;vertical-align:middle"></span>${z.name}</div>
+        <div class="${monBadgeClass(z.badge)}" id="zhdr-badge-${z.id}">${z.badge}</div>
       </div>
-      <div class="o2-reading">${z.level}%</div>
-      <div class="o2-label">O₂ Saturation</div>
-      <div class="o2-bar-wrap">
-        <div class="o2-bar" style="width:${z.level}%;background:${barColor(z.level)}"></div>
+      <div class="segment" id="zbig-${z.id}" style="color:${c};font-size:24px">${z.level}%</div>
+      <div class="o2-label" style="margin-top:8px;margin-bottom:0">O₂ Saturation</div>
+
+      <div class="spark-wrap">
+        <div class="spark-grid"></div>
+        <div class="spark-label">TREND · last ${MAX_HISTORY * 10}s</div>
+        <div id="zspark-${z.id}">${renderSparkline(hist, c)}</div>
       </div>
-      <div class="check-form">
+
+      <div class="metric-row">
+        <div class="metric"><div class="metric-label">Min</div><div class="metric-value" id="zmin-${z.id}">${hist.length ? Math.min(...hist) + '%' : '—'}</div></div>
+        <div class="metric"><div class="metric-label">Max</div><div class="metric-value" id="zmax-${z.id}">${hist.length ? Math.max(...hist) + '%' : '—'}</div></div>
+        <div class="metric"><div class="metric-label">Avg</div><div class="metric-value" id="zavg-${z.id}">${hist.length ? (hist.reduce((a,b)=>a+b,0)/hist.length).toFixed(1) + '%' : '—'}</div></div>
+      </div>
+
+      <div class="o2-bar-wrap"><div class="o2-bar" id="zfullbar-${z.id}" style="width:${z.level}%;background:${c}"></div></div>
+
+      <div class="check-form" style="margin-top:10px">
         <input class="check-input" id="host-${z.id}" placeholder="host / IP to ping" value="127.0.0.1">
-        <button class="check-btn" onclick="runCheck('${z.id}')">Run Status Check</button>
+        <button class="check-btn" onclick="runCheck('${z.id}')">Status Check</button>
       </div>
       <pre class="check-output" id="out-${z.id}"></pre>
     `;
@@ -908,11 +1584,111 @@ async function loadLogs() {
   });
 }
 
+// ── 3D Hotel platform segment ring ───────────────────────────────────────────
+function buildPlatformRing() {
+  const plat = document.getElementById('platRing');
+  if (!plat) return;
+  const rx = 180, rz = 120;   // ellipse radii (must match .plat-cap dimensions /2)
+  const segments = 32;
+  // Cumulative arc-length sampling so segments tile the ellipse evenly with no overlap/gap
+  const samples = 512;
+  const pts = [];
+  for (let i = 0; i <= samples; i++) {
+    const a = (i / samples) * Math.PI * 2;
+    pts.push({ a, x: rx * Math.cos(a), z: rz * Math.sin(a) });
+  }
+  const cum = [0];
+  for (let i = 1; i <= samples; i++) {
+    const dx = pts[i].x - pts[i-1].x, dz = pts[i].z - pts[i-1].z;
+    cum.push(cum[i-1] + Math.sqrt(dx*dx + dz*dz));
+  }
+  const perim = cum[samples];
+  const segLen = perim / segments;
+  for (let s = 0; s < segments; s++) {
+    const target = s * segLen + segLen / 2;
+    let idx = 1;
+    while (idx < samples && cum[idx] < target) idx++;
+    const t = (target - cum[idx-1]) / (cum[idx] - cum[idx-1]);
+    const a = pts[idx-1].a + t * (pts[idx].a - pts[idx-1].a);
+    const x = rx * Math.cos(a);
+    const z = rz * Math.sin(a);
+    // Outward tangent angle (face's local +Z should point along outward normal)
+    // Ellipse normal direction at angle a: (rz*cos a, 0, rx*sin a) normalised
+    const nx = rz * Math.cos(a), nz = rx * Math.sin(a);
+    const normAngleDeg = Math.atan2(nx, nz) * 180 / Math.PI;
+    const seg = document.createElement('div');
+    seg.className = 'plat-seg';
+    seg.style.width = (segLen + 1.5).toFixed(2) + 'px';   // tiny overlap to mask gaps
+    seg.style.left = (-(segLen + 1.5) / 2).toFixed(2) + 'px';
+    seg.style.transform = `translate3d(${x.toFixed(2)}px, 0, ${z.toFixed(2)}px) rotateY(${normAngleDeg.toFixed(2)}deg)`;
+    plat.appendChild(seg);
+  }
+}
+
+// ── 3D hotspot tracking — projects building positions to dome-wrap coords ────
+const HOTEL_PERIOD_MS  = 16000;
+const HOTEL_TILT_X_DEG = -18;
+const HOTEL_PERSPECTIVE = 1400;
+const TRACKED_BUILDINGS = [
+  { zone: 'casino_floor', x: 0,   y: -1,  z: 0 },   // tower center (relative to scene center)
+  { zone: 'hotel_wing_a', x: -95, y: 29,  z: 0 },   // wing A
+  { zone: 'hotel_wing_b', x: 95,  y: 29,  z: 0 },   // wing B
+];
+
+function startHotelHotspotTracking() {
+  const scene = document.getElementById('hotel3dScene');
+  const domeWrap = document.getElementById('domeWrap');
+  if (!scene || !domeWrap) return;
+
+  function tick() {
+    const sceneRect = scene.getBoundingClientRect();
+    const domeRect  = domeWrap.getBoundingClientRect();
+    const cx = sceneRect.left + sceneRect.width / 2;
+    const cy = sceneRect.top  + sceneRect.height / 2;
+
+    const t = performance.now();
+    const phaseY = ((t / HOTEL_PERIOD_MS) % 1) * 360;
+    const ry = phaseY * Math.PI / 180;
+    const rx = HOTEL_TILT_X_DEG * Math.PI / 180;
+    const cosRY = Math.cos(ry), sinRY = Math.sin(ry);
+    const cosRX = Math.cos(rx), sinRX = Math.sin(rx);
+
+    TRACKED_BUILDINGS.forEach(b => {
+      // rotateY
+      let x = b.x * cosRY + b.z * sinRY;
+      let z = -b.x * sinRY + b.z * cosRY;
+      let y = b.y;
+      // rotateX
+      const yN = y * cosRX - z * sinRX;
+      const zN = y * sinRX + z * cosRX;
+      y = yN; z = zN;
+      // perspective
+      const scale = HOTEL_PERSPECTIVE / (HOTEL_PERSPECTIVE - z);
+      const screenX = cx + x * scale;
+      const screenY = cy + y * scale;
+      const relX = ((screenX - domeRect.left) / domeRect.width) * 100;
+      const relY = ((screenY - domeRect.top)  / domeRect.height) * 100;
+
+      const hot = document.querySelector(`.zone-hot[data-zone="${b.zone}"]`);
+      if (hot) {
+        hot.style.left = relX.toFixed(2) + '%';
+        hot.style.top  = relY.toFixed(2) + '%';
+        hot.style.opacity = z > -50 ? '1' : '0.3';
+      }
+    });
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
 // ── Init ──────────────────────────────────────────────────────────────────────
+buildPlatformRing();
+startHotelHotspotTracking();
 fetchBubbleStatus();
 fetchZoneData();
 setInterval(fetchBubbleStatus, 10000);
-setInterval(fetchZoneData, 30000);
+setInterval(fetchZoneData, 10000);
 </script>
 </body>
 </html>
