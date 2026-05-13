@@ -5,105 +5,175 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BCS Login — Wormhole Resort & Casino</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Share+Tech+Mono&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg:     #0c0c10;
-    --panel:  #141417;
-    --border: #3d2e10;
-    --neon:   #ffd700;
-    --dim:    #7a6533;
-    --text:   #f5e8c0;
-    --red:    #ff4466;
+    --bg:      #0a1218;
+    --panel:   #131e26;
+    --panel2:  #0f1820;
+    --panel3:  #1a2832;
+    --border:  #243340;
+    --border2: #2c3e4d;
+    --neon:    #4ade80;
+    --neon2:   #22c55e;
+    --accent:  #38bdf8;
+    --dim:     #6b8290;
+    --text:    #d4e2ec;
+    --label:   #94a8b8;
+    --bright:  #ffffff;
+    --red:     #ef4444;
   }
 
   body {
-    background: var(--bg);
-    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 30%, rgba(74,222,128,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(56,189,248,0.04) 0%, transparent 60%),
+      var(--bg);
+    font-family: 'Inter', system-ui, sans-serif;
     min-height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: var(--text); overflow: hidden; position: relative;
   }
   body::after {
     content: ''; position: fixed; inset: 0;
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
-    pointer-events: none; z-index: 9999;
+    background:
+      linear-gradient(rgba(74,222,128,0.025) 1px, transparent 1px) 0 0 / 32px 32px,
+      linear-gradient(90deg, rgba(74,222,128,0.025) 1px, transparent 1px) 0 0 / 32px 32px;
+    pointer-events: none; z-index: 1;
   }
 
   .stars {
     position: fixed; inset: 0;
     background-image:
-      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
-      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.45) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.25) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.35) 0%, transparent 100%),
       radial-gradient(1px 1px at 75% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
-      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.45) 0%, transparent 100%),
       radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
       radial-gradient(1px 1px at 60% 90%, rgba(255,255,255,0.2) 0%, transparent 100%),
-      radial-gradient(1px 1px at 45% 50%, rgba(255,255,255,0.4) 0%, transparent 100%);
+      radial-gradient(1px 1px at 45% 50%, rgba(255,255,255,0.35) 0%, transparent 100%);
     pointer-events: none; z-index: 0;
   }
 
   .login-wrap {
-    position: relative; z-index: 1;
-    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center; gap: 22px;
     width: 100%; max-width: 440px; padding: 0 16px;
   }
 
   .resort-logo { text-align: center; }
-  .resort-logo .logo-title { font-size: 11px; letter-spacing: 4px; color: var(--dim); text-transform: uppercase; }
+  .resort-logo .logo-title {
+    font-size: 10px; letter-spacing: 4px; color: var(--label);
+    text-transform: uppercase; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .resort-logo .logo-title::before,
+  .resort-logo .logo-title::after {
+    content: ''; width: 24px; height: 1px; background: var(--border2);
+  }
   .resort-logo .logo-name {
-    font-size: 20px; letter-spacing: 2px; color: var(--neon);
-    text-shadow: 0 0 18px rgba(255,215,0,0.7), 0 0 40px rgba(255,215,0,0.3);
+    font-size: 22px; letter-spacing: 2px; color: var(--neon);
+    text-shadow: 0 0 18px rgba(74,222,128,0.55), 0 0 36px rgba(74,222,128,0.25);
+    margin-top: 8px; font-weight: 800;
+  }
+  .resort-logo .live-pill {
+    margin-top: 10px; display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(74,222,128,0.12); color: var(--neon);
+    border: 1px solid var(--neon); padding: 3px 10px; border-radius: 12px;
+    font-size: 9px; letter-spacing: 1.5px; font-weight: 700;
+  }
+  .resort-logo .live-pill::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--neon);
+    box-shadow: 0 0 6px var(--neon);
+    animation: blink 0.9s step-end infinite;
   }
 
   .card {
     width: 100%; background: var(--panel);
-    border: 1px solid var(--border); border-top: 2px solid var(--neon);
+    border: 1px solid var(--border);
     padding: 32px; position: relative;
-    box-shadow: 0 0 40px rgba(255,215,0,0.1), inset 0 0 40px rgba(0,0,0,0.5);
+    border-radius: 12px;
+    box-shadow:
+      0 4px 24px rgba(0,0,0,0.6),
+      0 0 60px rgba(74,222,128,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.04);
   }
   .card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--neon), transparent); opacity: 0.5;
+    content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--neon), transparent);
+    opacity: 0.8; border-radius: 2px;
   }
 
-  .card-header { text-align: center; margin-bottom: 28px; }
-  .card-header h1 { font-size: 18px; letter-spacing: 3px; color: var(--neon); text-transform: uppercase; }
-  .card-header p  { font-size: 11px; color: var(--dim); margin-top: 6px; letter-spacing: 1px; }
+  .card-header { text-align: center; margin-bottom: 26px; }
+  .card-header h1 {
+    font-size: 18px; letter-spacing: 2.5px; color: var(--bright);
+    text-transform: uppercase; font-weight: 700;
+  }
+  .card-header p {
+    font-size: 11px; color: var(--label); margin-top: 8px; letter-spacing: 1px;
+    font-weight: 500;
+  }
 
-  .field { margin-bottom: 18px; }
+  .field { margin-bottom: 16px; }
   .field label {
-    display: block; font-size: 10px; letter-spacing: 2px; color: var(--dim);
-    text-transform: uppercase; margin-bottom: 6px;
+    display: block; font-size: 10px; letter-spacing: 1.8px; color: var(--label);
+    text-transform: uppercase; margin-bottom: 7px; font-weight: 600;
   }
   .field input {
-    width: 100%; background: rgba(255,215,0,0.04); border: 1px solid var(--border);
-    color: var(--neon); font-family: inherit; font-size: 14px;
-    padding: 10px 12px; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-    letter-spacing: 1px;
+    width: 100%; background: var(--panel2); border: 1px solid var(--border);
+    color: var(--text); font-family: inherit; font-size: 14px;
+    padding: 11px 14px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    letter-spacing: 0.5px; border-radius: 8px;
   }
-  .field input:focus { border-color: var(--neon); box-shadow: 0 0 10px rgba(255,215,0,0.25); }
+  .field input::placeholder { color: var(--dim); }
+  .field input:focus {
+    border-color: var(--neon); background: var(--panel3);
+    box-shadow: 0 0 0 3px rgba(74,222,128,0.12);
+  }
 
   .btn-login {
-    width: 100%; background: transparent; border: 1px solid var(--neon); color: var(--neon);
-    font-family: inherit; font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
-    padding: 12px; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; margin-top: 8px;
+    width: 100%;
+    background: linear-gradient(180deg, var(--neon) 0%, var(--neon2) 100%);
+    border: 1px solid var(--neon);
+    color: #042713;
+    font-family: inherit; font-size: 13px; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 800;
+    padding: 13px; cursor: pointer; margin-top: 10px;
+    border-radius: 8px;
+    transition: transform 0.1s, box-shadow 0.2s, filter 0.2s;
+    box-shadow: 0 2px 12px rgba(74,222,128,0.3), inset 0 1px 0 rgba(255,255,255,0.25);
   }
-  .btn-login:hover { background: rgba(255,215,0,0.12); box-shadow: 0 0 20px rgba(255,215,0,0.4); }
+  .btn-login:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 4px 22px rgba(74,222,128,0.55), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .btn-login:active { transform: translateY(1px); }
 
   .error-msg {
-    background: rgba(255,68,102,0.1); border: 1px solid var(--red); color: var(--red);
-    font-size: 12px; padding: 10px 14px; margin-bottom: 18px; letter-spacing: 0.5px;
+    background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.55);
+    color: var(--red); font-size: 12px; padding: 11px 14px; margin-bottom: 18px;
+    letter-spacing: 0.4px; border-radius: 8px;
+    display: flex; align-items: center; gap: 8px; font-weight: 500;
   }
-  .error-msg::before { content: '⚠ '; }
+  .error-msg::before {
+    content: '⚠'; display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: rgba(239,68,68,0.2); color: var(--red);
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
 
-  .sys-info { text-align: center; font-size: 10px; color: var(--dim); letter-spacing: 1px; line-height: 1.8; }
-  .sys-info span { color: var(--neon); }
+  .sys-info {
+    text-align: center; font-size: 10px; color: var(--label);
+    letter-spacing: 1px; line-height: 1.8; font-weight: 500;
+  }
+  .sys-info span { color: var(--neon); font-weight: 700; }
+  .sys-info .sep { color: var(--border2); margin: 0 6px; }
 
-  .blink { animation: blink 1.2s step-end infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .blink { animation: blink 1.1s step-end infinite; color: var(--neon); }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
 </style>
 </head>
 <body>
@@ -111,8 +181,9 @@
 <div class="login-wrap">
 
   <div class="resort-logo">
-    <div class="logo-title">☆ Wormhole Resort & Casino ☆</div>
+    <div class="logo-title">Wormhole Resort &amp; Casino</div>
     <div class="logo-name">BUBBLE CONTROL SYSTEM</div>
+    <div class="live-pill">SYSTEM ONLINE</div>
   </div>
 
   <div class="card">
@@ -128,18 +199,18 @@
     <form method="POST" action="/login">
       <div class="field">
         <label>Username</label>
-        <input type="text" name="username" autocomplete="off" autofocus placeholder="Enter username">
+        <input type="text" name="username" autocomplete="off" autofocus placeholder="Enter operator ID">
       </div>
       <div class="field">
         <label>Password</label>
-        <input type="password" name="password" placeholder="Enter password">
+        <input type="password" name="password" placeholder="Enter credentials">
       </div>
       <button type="submit" class="btn-login">Authenticate</button>
     </form>
   </div>
 
   <div class="sys-info">
-    BCS v3.1.4 &nbsp;|&nbsp; <span>ONLINE</span><span class="blink">█</span><br>
+    BCS v3.1.4 <span class="sep">|</span> <span>ONLINE</span><span class="blink">█</span><br>
     Wormhole Sector 7 — Low Earth Orbit<br>
     Unauthorised access is a violation of Galactic Code §47-B
   </div>
