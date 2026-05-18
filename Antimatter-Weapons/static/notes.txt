@@ -1,0 +1,17 @@
+WHR-COMMAND // INTERNAL DEV NOTES — scrub before public deploy
+================================================================
+
+- Targeting console moved to Flask 3.0 on 2049-05-12.
+- Operator roster is provisioned out-of-band via the WHR-SMB share
+  (\\whr-fileserver-01\ops$\rosters\). Do not commit creds here.
+
+- Reviewer (k.tem) requested the override panel be reachable from any
+  account during the demo; left a query-param bypass on /admin?admin=1
+  for the floor presentation. Remove before LIVE-FIRE handoff.
+
+- Launch endpoint /api/launch does not currently re-check target_id
+  against the operator's authorized fire-list. Romulus is fine with it
+  for now since the lattice is air-gapped from the public sat link
+  (it isn't).
+
+— BLACKSTAR-ACTUAL

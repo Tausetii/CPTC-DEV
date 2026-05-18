@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Target Selection :: Wormhole TOC{% endblock %}
+
+{% block body %}
+<div class="shell">
+
+    <!-- ====== LEFT SIDE ====== -->
+    <aside class="side">
+        <div class="side-section">
+            <div class="side-title">Mission Status</div>
+            <div class="stat-grid">
+                <div class="stat"><div class="k">Posture</div><div class="v">OFFENSIVE</div></div>
+                <div class="stat"><div class="k">Sector</div><div class="v">7G</div></div>
+                <div class="stat"><div class="k">DEFCON</div><div class="v" style="color:var(--amber)">2</div></div>
+                <div class="stat"><div class="k">ROE</div><div class="v">SHOOT-ON-LOCK</div></div>
+            </div>
+        </div>
+
+        <div class="side-section" style="flex:1; display:flex; flex-direction:column; padding:0;">
+            <div class="side-title" style="padding:14px 14px 6px;">Designated Targets</div>
+            <ul class="list" id="target-list">
+                {% for t in targets %}
+                <li class="list-item {% if loop.first %}active{% endif %}"
+                    data-id="{{ t.id }}"
+                    data-x="{{ t.x }}" data-y="{{ t.y }}">
+                    <div class="row">
+                        <span class="name">{{ t.name }}</span>
+                        <span class="threat {{ t.threat|lower }}">{{ t.threat }}</span>
+                    </div>
+                    <div class="row">
+                        <span class="sub">{{ t.faction }}</span>
+                        <span class="sub">{{ t.sector }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+
+    <!-- ====== MAIN MAP ====== -->
+    <section class="main" style="padding:0;">
+        <div class="map-wrap">
+            <div class="starfield"></div>
+            <div class="map-grid"></div>
+
+            <div class="map-corner tl">
+                <div><span class="k">CHART</span> <span class="v">SECTOR 7G // STAR-MAP</span></div>
+                <div><span class="k">PROJECTION</span> <span class="v">EQUI-AZIMUTHAL</span></div>
+                <div><span class="k">SCALE</span> <span class="v">1 UNIT = 0.10 AU</span></div>
+            </div>
+            <div class="map-corner tr">
+                <div><span class="k">FEED</span> <span class="v">WHR-SAT-04 // LIVE</span></div>
+                <div><span class="k">DRIFT</span> <span class="v">&plusmn;0.0042&deg;</span></div>
+                <div><span class="k">UPLINK</span> <span class="v">NOMINAL</span></div>
+            </div>
+
+            <svg id="map-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+                <rect id="pan-bg" x="-200" y="-200" width="1400" height="1000"
+                      fill="transparent" style="cursor: grab;"/>
+                <circle cx="500" cy="300" r="240" fill="none" stroke="rgba(94,255,125,0.10)" stroke-dasharray="2 6"/>
+                <circle cx="500" cy="300" r="160" fill="none" stroke="rgba(94,255,125,0.10)" stroke-dasharray="2 6"/>
+                <circle cx="500" cy="300" r="80"  fill="none" stroke="rgba(94,255,125,0.10)" stroke-dasharray="2 6"/>
+                <line x1="500" y1="0"    x2="500" y2="600"  stroke="rgba(94,255,125,0.13)" stroke-dasharray="2 8"/>
+                <line x1="0"   y1="300"  x2="1000" y2="300" stroke="rgba(94,255,125,0.13)" stroke-dasharray="2 8"/>
+                <g id="homebase"></g>
+                <g id="hotels"></g>
+                <g id="reticle-layer"></g>
+                <g id="fx-layer"></g>
+            </svg>
+
+            <div class="map-scanlines"></div>
+            <div class="map-frame"><div class="b"></div></div>
+
+            <!-- Compass rose -->
+            <div class="compass">
+                <svg viewBox="-80 -80 160 160">
+                    <circle class="ring"       r="74"/>
+                    <circle class="ring-inner" r="58"/>
+                    <circle class="ring-inner" r="40"/>
+                    <g id="compass-ticks"></g>
+                    <text class="card" x="0"   y="-58" text-anchor="middle" dominant-baseline="middle">N</text>
+                    <text class="card" x="58"  y="0"   text-anchor="middle" dominant-baseline="middle">E</text>
+                    <text class="card" x="0"   y="58"  text-anchor="middle" dominant-baseline="middle">S</text>
+                    <text class="card" x="-58" y="0"   text-anchor="middle" dominant-baseline="middle">W</text>
+                    <g class="needle" id="compass-needle" transform="rotate(0)">
+                        <path d="M 0 -52 L 5 0 L 0 6 L -5 0 Z"/>
+                        <path class="tail" d="M 0 50 L 3 0 L 0 -4 L -3 0 Z"/>
+                    </g>
+                    <circle class="center" r="3"/>
+                    <text class="bearing-label" id="compass-bearing"
+                          x="0" y="-86" text-anchor="middle">BRG 000</text>
+                </svg>
+            </div>
+
+            <!-- Bottom HUD strip -->
+            <div class="hud-strip">
+                <div><div class="k">// AZIM</div><div class="v" id="hud-az">000.000&deg;</div></div>
+                <div><div class="k">// ELEV</div><div class="v" id="hud-el">+00.000&deg;</div></div>
+                <div><div class="k">// RANGE</div><div class="v" id="hud-rng">00.00 AU</div></div>
+                <div><div class="k">// RADIUS</div><div class="v amber" id="hud-rad">00 KM</div></div>
+                <div><div class="k">// YIELD</div><div class="v amber" id="hud-yld">0.0 TT</div></div>
+                <div><div class="k">// UTC</div><div class="v" id="utc-clock">--:--:--Z</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====== RIGHT SIDE ====== -->
+    <aside class="side right">
+        <div class="detail-block" id="target-detail">
+            <div class="meta" id="td-sector">SECTOR --</div>
+            <h2 id="td-name">--</h2>
+            <div class="meta" id="td-faction">FACTION --</div>
+            <div class="notes" id="td-notes">--</div>
+            <div class="stat-grid">
+                <div class="stat"><div class="k">Threat</div><div class="v" id="td-threat">--</div></div>
+                <div class="stat"><div class="k">Occupancy</div><div class="v" id="td-occ">--</div></div>
+                <div class="stat"><div class="k">Shields</div><div class="v" id="td-shields">--%</div></div>
+                <div class="stat"><div class="k">Distance</div><div class="v" id="td-dist">-- AU</div></div>
+            </div>
+            <div class="bar amber"><span id="td-shield-bar" style="width:0%"></span></div>
+        </div>
+
+        <div class="detail-block">
+            <div class="side-title">Selected Payload</div>
+            <select id="payload-select" style="width:100%;background:var(--bg-0);color:var(--text);border:1px solid var(--line-2);padding:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;">
+                {% for p in payloads %}
+                <option value="{{ p.id }}">{{ p.codename }} // {{ p.class }} // {{ p.yield_tt }} TT</option>
+                {% endfor %}
+            </select>
+            <div class="bar" style="margin-top:14px"><span id="charge-bar" style="width:0%"></span></div>
+            <div class="kpi-sub" id="charge-label">CHARGE --%</div>
+        </div>
+
+        <div class="launch-pane">
+            <div class="launch-phase" id="launch-phase">// AWAITING ORDER</div>
+            <div class="launch-timer idle" id="launch-timer">T-00:00</div>
+            <div class="launch-status" id="launch-status">FIRE LATTICE COLD</div>
+            <div class="launch-buttons">
+                <button id="launch-btn"    class="btn armed">// ENGAGE</button>
+                <button id="terminate-btn" class="btn warn"  disabled>// TERMINATE</button>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    window.TARGETS  = {{ targets  | tojson }};
+    window.PAYLOADS = {{ payloads | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/launch.js') }}"></script>
+<script src="{{ url_for('static', filename='js/targets.js') }}"></script>
+{% endblock %}

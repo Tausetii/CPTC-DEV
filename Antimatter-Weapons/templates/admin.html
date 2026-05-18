@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Command Override // Wormhole Targeting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gotham.css') }}">
+</head>
+<body class="scroll-y">
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-mark"></div>
+            <div>
+                WORMHOLE COMMAND
+                <div class="brand-sub">// COMMAND OVERRIDE PANEL</div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <span class="pill red">OMEGA OVERRIDE</span>
+            <a class="pill" href="{{ url_for('targets') }}">CONSOLE</a>
+        </div>
+    </div>
+    <div class="admin-shell">
+        <h1>:: OMEGA COMMAND OVERRIDE ::</h1>
+        <div class="sub">Restricted. Do not screenshot. Audit log retained for 30d.</div>
+
+        <h2 style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--text-faint);">// OPERATOR ROSTER</h2>
+        <table class="admin-table">
+            <tr><th>Username</th><th>Password</th><th>Clearance</th><th>Callsign</th></tr>
+            {% for o in operators %}
+            <tr>
+                <td>{{ o.username }}</td>
+                <td>{{ o.password }}</td>
+                <td>{{ o.clearance }}</td>
+                <td>{{ o.callsign }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <h2 style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--text-faint);">// SYSTEM SECRETS</h2>
+        <table class="admin-table">
+            {% for k, v in secrets.items() %}
+            <tr><th>{{ k }}</th><td style="color:var(--amber);">{{ v }}</td></tr>
+            {% endfor %}
+        </table>
+
+        <h2 style="font-family:var(--mono);font-size:11px;letter-spacing:0.22em;color:var(--text-faint);">// LAUNCH HISTORY</h2>
+        <table class="admin-table">
+            <tr><th>Operator</th><th>Target</th><th>Payload</th><th>Yield (TT)</th><th>Radius (km)</th><th>Launched</th></tr>
+            {% for l in launches %}
+            <tr>
+                <td>{{ l.operator }}</td>
+                <td>{{ l.target_id }}</td>
+                <td>{{ l.payload_id }}</td>
+                <td>{{ l.yield_tt }}</td>
+                <td>{{ l.radius_km }}</td>
+                <td>{{ l.launched_at }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" style="text-align:center;color:var(--text-faint);">No launches recorded.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

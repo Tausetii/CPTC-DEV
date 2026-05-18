@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Payloads :: Wormhole Command{% endblock %}
+
+{% block head_extra %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="shell">
+
+    <!-- ====== LEFT SIDE ====== -->
+    <aside class="side">
+        <div class="side-section">
+            <div class="side-title"><span class="dot amber"></span> Armory Posture</div>
+            <div class="stat-grid">
+                <div class="stat"><div class="k">Reactors</div><div class="v">3 / 3</div></div>
+                <div class="stat"><div class="k">Warheads</div><div class="v">{{ payloads | length }}</div></div>
+                <div class="stat"><div class="k">Containment</div><div class="v" style="color:var(--green)">NOMINAL</div></div>
+                <div class="stat"><div class="k">Drift</div><div class="v">±0.0042°</div></div>
+            </div>
+        </div>
+
+        <div class="side-section">
+            <div class="side-title"><span class="dot"></span> Lock Target</div>
+            <select id="payload-target" style="width:100%;background:var(--bg-0);color:var(--text);border:1px solid var(--line);padding:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.16em;">
+                {% for t in targets %}
+                <option value="{{ t.id }}">{{ t.name }} // {{ t.sector }}</option>
+                {% endfor %}
+            </select>
+            <div class="kpi-sub" style="margin-top:8px" id="lock-status">PAYLOAD LOCK :: PENDING</div>
+        </div>
+
+        <div class="side-section" style="flex:1; padding:0;">
+            <div class="side-title" style="padding:14px 16px 6px;"><span class="dot red"></span> Threat Console</div>
+            <div class="feed" id="feed"></div>
+        </div>
+    </aside>
+
+    <!-- ====== MAIN DASHBOARD ====== -->
+    <section class="main">
+        <div class="kpi-row">
+            <div class="kpi">
+                <div class="kpi-label">Total Yield Available</div>
+                <div class="kpi-value" id="kpi-yield">--</div>
+                <div class="kpi-sub">TERATONS // ALL PLATFORMS</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Active Warheads</div>
+                <div class="kpi-value green" id="kpi-warheads">--</div>
+                <div class="kpi-sub">READY-TO-LAUNCH</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Mean Charge</div>
+                <div class="kpi-value amber" id="kpi-charge">--%</div>
+                <div class="kpi-sub">REACTOR CAPACITY</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Critical Mass Window</div>
+                <div class="kpi-value red">14:22</div>
+                <div class="kpi-sub">MINUTES // CASCADE</div>
+            </div>
+        </div>
+
+        <div class="dash">
+
+            <div class="card col-12">
+                <div class="card-head">
+                    <span>// SELECT PAYLOAD</span>
+                    <span class="tag" id="selected-codename">--</span>
+                </div>
+                <div class="card-body">
+                    <div class="payload-grid">
+                        {% for p in payloads %}
+                        <div class="payload-card {% if loop.first %}selected{% endif %}" data-id="{{ p.id }}">
+                            <div class="codename">{{ p.codename }}</div>
+                            <div class="class-tag">CLASS :: {{ p.class }}</div>
+                            <div class="blurb">{{ p.description }}</div>
+                            <div class="yield">{{ p.yield_tt }}<span class="unit">TT</span></div>
+                            <div class="kpi-sub">RADIUS {{ p.radius_km }} KM // CHARGE {{ p.charge_pct }}%</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="dmg-callout" id="damage-callout">--</div>
+                </div>
+            </div>
+
+            <div class="card col-4">
+                <div class="card-head"><span>// COMPOSITION</span><span class="tag">SELECTED</span></div>
+                <div class="card-body" style="display:flex;align-items:center;justify-content:center;">
+                    <canvas id="chart-composition" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-8">
+                <div class="card-head"><span>// PREDICTED DAMAGE CURVE</span><span class="tag">YIELD vs TIME</span></div>
+                <div class="card-body">
+                    <canvas id="chart-damage" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-5">
+                <div class="card-head"><span>// FLEET YIELD COMPARISON</span><span class="tag">ALL WARHEADS</span></div>
+                <div class="card-body">
+                    <canvas id="chart-yield" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-4">
+                <div class="card-head"><span>// REACTOR CHARGE</span><span class="tag">LIVE</span></div>
+                <div class="card-body">
+                    <canvas id="chart-charge" height="220"></canvas>
+                </div>
+            </div>
+
+            <div class="card col-3">
+                <div class="card-head"><span>// FIRE CONTROL</span><span class="tag">LIVE</span></div>
+                <div class="card-body" style="display:flex;flex-direction:column;">
+                    <div style="text-align:center;">
+                        <div id="radius-big" style="font-family:var(--stencil);font-size:42px;color:var(--orange);letter-spacing:0.04em;">--</div>
+                        <div class="kpi-sub">KILOMETERS // ANNIHILATION RADIUS</div>
+                    </div>
+                    <div class="launch-phase" id="launch-phase" style="margin-top:14px;">// AWAITING ORDER</div>
+                    <div class="launch-timer idle" id="launch-timer">T-00:00</div>
+                    <div class="launch-status" id="launch-status">FIRE LATTICE COLD</div>
+                    <div class="launch-buttons">
+                        <button id="launch-btn"    class="btn armed">// ENGAGE</button>
+                        <button id="terminate-btn" class="btn warn"  disabled>// TERMINATE</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ====== RIGHT SIDE ====== -->
+    <aside class="side right">
+        <div class="detail-block" id="payload-detail">
+            <div class="meta" id="pd-class">CLASS --</div>
+            <h2 id="pd-codename">--</h2>
+            <div class="notes" id="pd-desc">--</div>
+            <div class="stat-grid">
+                <div class="stat"><div class="k">Yield</div><div class="v" id="pd-yield">-- TT</div></div>
+                <div class="stat"><div class="k">Radius</div><div class="v" id="pd-radius">-- km</div></div>
+                <div class="stat"><div class="k">Charge</div><div class="v" id="pd-charge">--%</div></div>
+                <div class="stat"><div class="k">Containment</div><div class="v" style="color:var(--green)">NOMINAL</div></div>
+            </div>
+            <div class="bar" style="margin-top:10px"><span id="pd-charge-bar" style="width:0%"></span></div>
+        </div>
+
+        <div class="detail-block">
+            <div class="side-title"><span class="dot red"></span> Rules of Engagement</div>
+            <div class="notes" style="font-size:11px;line-height:1.6">
+                <p>OMEGA-clearance required for yields exceeding 10 TT.</p>
+                <p>Dark-matter platforms must be deployed against shielded high-value targets only.</p>
+                <p>Singularity Initiator cascade window is non-recoverable. Confirm command authorization before engage.</p>
+            </div>
+        </div>
+    </aside>
+</div>
+
+<script>
+    window.PAYLOADS = {{ payloads | tojson }};
+    window.TARGETS  = {{ targets  | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/launch.js') }}"></script>
+<script src="{{ url_for('static', filename='js/payloads.js') }}"></script>
+{% endblock %}

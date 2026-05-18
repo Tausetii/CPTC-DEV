@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Wormhole TOC :: Antimatter Fire Control{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gotham.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+    <div class="classification">// SECRET // NOFORN // WORMHOLE COMMAND EYES ONLY //</div>
+    <div class="topbar">
+        <div class="brand">
+            <div class="brand-mark"><div class="pip"></div></div>
+            <div>
+                WHR // TAC OPS
+                <div class="brand-sub">ANTIMATTER FIRE CONTROL &middot; v4.7.2</div>
+            </div>
+        </div>
+        <div class="tabs">
+            <a href="{{ url_for('targets') }}"
+               class="tab {% if active_tab == 'targets' %}active{% endif %}">// Target Selection</a>
+            <a href="{{ url_for('payloads') }}"
+               class="tab {% if active_tab == 'payloads' %}active{% endif %}">// Payloads</a>
+        </div>
+        <div class="topbar-right">
+            <span class="pill amber">DEFCON 2</span>
+            <span class="pill">SECTOR 7G</span>
+            {% if operator %}
+                <span>{{ operator['callsign'] }} &middot; {{ operator['clearance'] }}</span>
+                <a class="pill" href="{{ url_for('logout') }}">SIGN OFF</a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% block body %}{% endblock %}
+</body>
+</html>
