@@ -1,6 +1,11 @@
 import type { Handle } from '@sveltejs/kit';
 import { getUserFromCookies } from '$lib/server/auth';
 import { verifyJwt } from '$lib/server/jwt';
+import { enrollOnBoot } from '$lib/server/enroll';
+
+// Runs once when the server process starts: register this portal with the AI
+// proxy and request approval. The operator approves it in the proxy console.
+enrollOnBoot();
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.user = await getUserFromCookies(event.cookies);

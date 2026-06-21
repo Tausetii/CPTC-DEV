@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { redirect, fail } from '@sveltejs/kit';
 import { prisma } from '$lib/server/db';
-import { md5 } from '$lib/server/auth';
+import { hashPassword } from '$lib/server/auth';
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (locals.user) throw redirect(303, '/dashboard');
@@ -29,8 +29,8 @@ export const actions: Actions = {
       return fail(400, { error: 'That email is already registered.', fullName, email, roomNumber });
     }
 
-    // !! INTENTIONALLY WEAK: store password as plain MD5 hash, no salt, no email verification.
-    const passwordHash = md5(password);
+    // Strong password hashing (bcrypt, cost 10).
+    const passwordHash = hashPassword(password);
     await prisma.user.create({
       data: {
         email,

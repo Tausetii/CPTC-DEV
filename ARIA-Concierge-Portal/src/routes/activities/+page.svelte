@@ -12,7 +12,7 @@
 
   let toast = '';
   async function book(a: typeof activities[number]) {
-    // POST goes through /api/book-activity — intentionally NO auth check on the server.
+    // POST goes through /api/book-activity — requires authentication.
     const res = await fetch('/api/book-activity', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

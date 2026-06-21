@@ -1,0 +1,25 @@
+{
+  "name": "aria-ai-proxy",
+  "version": "2.0.0",
+  "description": "Managed Gemini key broker for the ARIA Concierge Portal. Per-machine API keys, operator CLI, and a local-only admin console around the off-box key broker.",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "bin": {
+    "proxyctl": "bin/proxyctl.js"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "admin": "node admin/app.js",
+    "preview": "node admin/preview.js",
+    "ctl": "node bin/proxyctl.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0"
+  }
+}

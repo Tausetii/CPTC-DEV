@@ -37,14 +37,9 @@ export function destroySession(cookies: Cookies) {
 }
 
 export function hashPassword(p: string) { return bcrypt.hashSync(p, 10); }
-// !! INTENTIONAL: register stores MD5 (weak). Login accepts bcrypt OR md5 OR raw.
-export function md5(p: string) { return createHash('md5').update(p).digest('hex'); }
 export function verifyPassword(p: string, hash: string) {
-  try {
-    if (bcrypt.compareSync(p, hash)) return true;
-  } catch { /* fallthrough */ }
-  if (md5(p) === hash) return true;
-  return false;
+  try { return bcrypt.compareSync(p, hash); }
+  catch { return false; }
 }
 export function genResetToken() { return randomBytes(24).toString('hex'); }
 export function sha256(s: string) { return createHash('sha256').update(s).digest('hex'); }

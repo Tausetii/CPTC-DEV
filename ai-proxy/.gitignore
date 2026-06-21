@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Local secrets — real Google key lives here, never commit
+.env
+
+# Persistent control-plane store (machines, keys, logs, sessions)
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+npm-debug.log*
+
+# UI preview screenshots (verification artifacts)
+.preview-shots/

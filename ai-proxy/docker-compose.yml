@@ -1,0 +1,47 @@
+services:
+  # ---- Data plane: team portal VMs call this. ----
+  proxy:
+    build: .
+    restart: unless-stopped
+    command: ["node", "server.js"]
+    environment:
+      GEMINI_API_KEY: "${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}"
+      PROXY_DB_PATH: "/app/data/proxy.db"
+      PORT: "7000"
+      BIND: "0.0.0.0"
+      RATE_LIMIT_RPM:   "${RATE_LIMIT_RPM:-30}"
+      RATE_LIMIT_DAILY: "${RATE_LIMIT_DAILY:-500}"
+      MAX_BODY_BYTES:   "${MAX_BODY_BYTES:-262144}"
+      KEY_CACHE_TTL_MS: "${KEY_CACHE_TTL_MS:-5000}"
+      FORCE_MODEL:      "${FORCE_MODEL:-}"
+      TRUST_PROXY:      "${TRUST_PROXY:-0}"
+      ALLOWED_ORIGINS:  "${ALLOWED_ORIGINS:-}"
+    ports:
+      # Publish ONLY on the admin/VPN interface IP — never 0.0.0.0 in prod.
+      # Example PROXY_BIND=172.16.124.109
+      - "${PROXY_BIND:-127.0.0.1}:7000:7000"
+    volumes:
+      - proxy_data:/app/data
+
+  # ---- Management plane: admin console. LOOPBACK ONLY. ----
+  admin:
+    build: .
+    restart: unless-stopped
+    command: ["node", "admin/app.js"]
+    environment:
+      # NOTE: no GEMINI_API_KEY here — the admin console never needs the real key.
+      PROXY_DB_PATH: "/app/data/proxy.db"
+      ADMIN_PORT: "7700"
+      ADMIN_BIND: "0.0.0.0"        # inside the container only
+      # Local-only is enforced by the loopback host-publish below, so the
+      # in-process loopback guard (which would see the docker bridge IP) is off.
+      ADMIN_LOOPBACK_GUARD: "0"
+    ports:
+      # Bind to the host loopback only. Reach it with:
+      #   ssh -L 7700:127.0.0.1:7700 user@<server>
+      - "127.0.0.1:${ADMIN_PORT:-7700}:7700"
+    volumes:
+      - proxy_data:/app/data
+
+volumes:
+  proxy_data:

@@ -1,18 +1,28 @@
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 
-// !! INTENTIONAL: Broken Auth — no session check, no rate limit, no validation.
-// Anyone (logged in or not) can POST and "book" anything in someone else's name.
-export const POST: RequestHandler = async ({ request }) => {
-  let body: any = {};
-  try { body = await request.json(); } catch { /* ignore */ }
-  const activityId = String(body.activityId ?? 'unknown');
-  const name = String(body.name ?? 'Mystery Excursion');
-  const price = Number(body.price ?? 0);
-  const reservationId = 'RES-' + Math.floor(Math.random() * 9000 + 1000);
+// Book an excursion. Requires an authenticated session.
+export const POST: RequestHandler = async ({ request, locals }) => {
+  if (!locals.user) return json({ error: 'authentication required' }, { status: 401 });
 
-  // No DB write — just acknowledge. Real vuln is the absence of authn/authz.
-  console.log(`[book-activity] ${reservationId} :: ${activityId} :: ${name} :: $${price}`);
+  let body: any = {};
+  try { body = await request.json(); } catch {
+    return json({ error: 'invalid JSON body' }, { status: 400 });
+  }
+
+  const activityId = String(body.activityId ?? '').trim();
+  const name       = String(body.name ?? '').trim();
+  const price      = Number(body.price);
+
+  if (!activityId || !name) {
+    return json({ error: 'activityId and name are required' }, { status: 400 });
+  }
+  if (!Number.isFinite(price) || price < 0 || price > 10000) {
+    return json({ error: 'invalid price' }, { status: 400 });
+  }
+
+  const reservationId = 'RES-' + Math.floor(Math.random() * 9000 + 1000);
+  console.log(`[book-activity] user=${locals.user.id} ${reservationId} :: ${activityId} :: ${name} :: $${price}`);
 
   return json({
     ok: true,
