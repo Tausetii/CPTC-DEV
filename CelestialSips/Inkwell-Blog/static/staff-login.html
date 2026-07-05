@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Staff login — Celestial Sips</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/api.js" defer></script>
+    <script src="/static/js/main.js" defer></script>
+    <script src="/static/js/staff.js" defer></script>
+</head>
+<body>
+<header class="site-header staff-header">
+    <div class="header-inner">
+        <a href="/" class="logo">Celestial Sips<span>Blog &amp; Brew</span></a>
+        <nav class="main-nav sans">
+            <a href="/" data-nav>Home</a>
+            <a href="/blog" data-nav>Blog</a>
+            <a href="/shop" data-nav>Shop</a>
+            <a href="/cart" data-nav>Cart <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="/about" data-nav>About</a>
+        </nav>
+        <div class="auth-links" id="auth-nav"></div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="form-panel">
+        <h1 style="margin-top: 0; font-size: 26px;">Staff portal</h1>
+        <p class="sans muted">Internal access for inventory and barista management. Not linked from the public site.</p>
+
+        <div id="staff-login-error" class="flash error" hidden></div>
+
+        <form method="POST" action="/api/staff/login">
+            <div class="field">
+                <label for="username">Staff username</label>
+                <input id="username" name="username" autocomplete="off" required autofocus>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" required>
+            </div>
+            <button class="btn btn-primary" type="submit" style="width: 100%;">Sign in</button>
+        </form>
+    </div>
+</main>
+
+<footer class="site-footer">© Celestial Sips</footer>
+</body>
+</html>

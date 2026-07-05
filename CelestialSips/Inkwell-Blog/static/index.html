@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Celestial Sips — Blog &amp; Brew</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/api.js" defer></script>
+    <script src="/static/js/main.js" defer></script>
+    <script src="/static/js/home.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo">Celestial Sips<span>Blog &amp; Brew</span></a>
+        <nav class="main-nav sans">
+            <a href="/" data-nav>Home</a>
+            <a href="/blog" data-nav>Blog</a>
+            <a href="/shop" data-nav>Shop</a>
+            <a href="/cart" data-nav>Cart <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="/about" data-nav>About</a>
+        </nav>
+        <div class="auth-links" id="auth-nav"></div>
+    </div>
+</header>
+
+<main class="container">
+    <section class="hero-banner">
+        <h1>Stories, beans, and quiet mornings.</h1>
+        <p>Celestial Sips is a neighborhood café and online shop. Read our blog, browse single-origin beans, and leave a review on anything you've tried.</p>
+        <p style="margin-top: 20px;">
+            <a class="btn btn-primary" href="/shop">Shop coffee</a>
+            <a class="btn btn-outline hero-outline" href="/blog">Read the blog</a>
+        </p>
+    </section>
+
+    <div class="section-head">
+        <h2>From the blog</h2>
+        <a href="/blog">All posts →</a>
+    </div>
+    <div class="grid-3" id="home-posts" style="margin-bottom: 40px;"></div>
+
+    <div class="section-head">
+        <h2>Shop favorites</h2>
+        <a href="/shop">Full catalog →</a>
+    </div>
+    <div class="grid-4" id="home-products"></div>
+</main>
+
+<footer class="site-footer">© Celestial Sips</footer>
+</body>
+</html>

@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in — Celestial Sips</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/api.js" defer></script>
+    <script src="/static/js/main.js" defer></script>
+    <script src="/static/js/auth.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+    <div class="header-inner">
+        <a href="/" class="logo">Celestial Sips<span>Blog &amp; Brew</span></a>
+        <nav class="main-nav sans">
+            <a href="/" data-nav>Home</a>
+            <a href="/blog" data-nav>Blog</a>
+            <a href="/shop" data-nav>Shop</a>
+            <a href="/cart" data-nav>Cart <span class="cart-badge" id="cart-count">0</span></a>
+            <a href="/about" data-nav>About</a>
+        </nav>
+        <div class="auth-links" id="auth-nav"></div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="form-panel">
+        <h1 style="margin-top: 0; font-size: 26px;">Customer login</h1>
+        <p class="sans muted">Access your account and order history.</p>
+
+        <div id="login-error" class="flash error" hidden></div>
+        <div id="login-query" class="error-query" hidden></div>
+
+        <form method="POST" action="/api/auth/login">
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" name="username" autocomplete="username" required autofocus>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" autocomplete="current-password" required>
+            </div>
+            <button class="btn btn-primary" type="submit" style="width: 100%;">Log in</button>
+        </form>
+
+        <p class="sans" style="margin-top: 16px; font-size: 14px;">
+            No account? <a href="/register">Register</a>
+        </p>
+    </div>
+</main>
+
+<footer class="site-footer">© Celestial Sips</footer>
+</body>
+</html>
