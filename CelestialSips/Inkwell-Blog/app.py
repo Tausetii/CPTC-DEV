@@ -413,5 +413,6 @@ def api_staff_logout():
 if __name__ == "__main__":
     if not os.path.exists(DB_PATH):
         print("Database not found. Run: python seed.py")
+    host = os.environ.get("LAB_HOST", "0.0.0.0")
     port = int(os.environ.get("LAB_PORT", 5000))
-    app.run(host="127.0.0.1", port=port, debug=True)
+    app.run(host=host, port=port, debug=True)

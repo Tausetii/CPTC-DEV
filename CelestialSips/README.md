@@ -11,24 +11,47 @@ Intentionally vulnerable **single** web application for application penetration 
 
 ## Quick start
 
+### Windows (PowerShell)
+
 ```powershell
-cd WebHomework
+cd CelestialSips
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python main.py
 ```
 
-Then browse directly to the vulnerable site:
+### Kali Linux
 
-`http://127.0.0.1:5000`
+```bash
+cd CelestialSips
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python main.py
+```
+
+The server binds to `0.0.0.0:5000` by default so other machines on the lab network can reach it. On startup, `main.py` prints the host's LAN IP (for example `http://192.168.1.50:5000`).
+
+Override bind address or port with environment variables:
+
+```bash
+LAB_HOST=0.0.0.0 LAB_PORT=5000 python main.py
+```
+
+Then browse to the site:
+
+- On the same machine: `http://127.0.0.1:5000`
+- From another host on the network: `http://<server-ip>:5000`
 
 ### Manual setup (optional)
 
-```powershell
+```bash
 cd Inkwell-Blog
 python seed.py
-python app.py
+LAB_HOST=0.0.0.0 LAB_PORT=5000 python app.py
 ```
 
 ## Project structure
