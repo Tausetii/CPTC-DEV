@@ -44,7 +44,8 @@ def init_db():
             description TEXT NOT NULL,
             price_cents INTEGER NOT NULL,
             image TEXT,
-            stock INTEGER NOT NULL DEFAULT 50
+            stock INTEGER NOT NULL DEFAULT 50,
+            stock_api_url TEXT
         )
     """)
 
@@ -112,17 +113,17 @@ def init_db():
         )
 
     products = [
-        ("House Blend — 12oz", "Smooth medium roast with notes of chocolate and hazelnut.", 1499, "blend.jpg", 42),
-        ("Ethiopian Yirgacheffe", "Bright, floral single-origin. Perfect for pour-over.", 1899, "ethiopian.jpg", 28),
-        ("Ceramic Dripper Set", "Includes dripper, filters, and a tasting journal.", 2499, "dripper.jpg", 17),
-        ("Celestial Sips Book Club — March", "Curated paperback + tasting notes card.", 1299, "bookclub.jpg", 8),
-        ("Cold Brew Concentrate", "32oz bottle. Dilute 1:1 with water or milk.", 1699, "coldbrew.jpg", 35),
-        ("Logo Mug — Cream", "12oz stoneware mug with embossed Celestial Sips logo.", 999, "mug.jpg", 64),
+        ("House Blend — 12oz", "Smooth medium roast with notes of chocolate and hazelnut.", 1499, "blend.jpg", 42, "http://127.0.0.1:5000/svc/fulfillment/v1/sku/1"),
+        ("Ethiopian Yirgacheffe", "Bright, floral single-origin. Perfect for pour-over.", 1899, "ethiopian.jpg", 28, "http://127.0.0.1:5000/svc/fulfillment/v1/sku/2"),
+        ("Ceramic Dripper Set", "Includes dripper, filters, and a tasting journal.", 2499, "dripper.jpg", 17, "http://127.0.0.1:5000/svc/fulfillment/v1/sku/3"),
+        ("Celestial Sips Book Club — March", "Curated paperback + tasting notes card.", 1299, "bookclub.jpg", 8, "http://127.0.0.1:5000/svc/fulfillment/v1/sku/4"),
+        ("Cold Brew Concentrate", "32oz bottle. Dilute 1:1 with water or milk.", 1699, "coldbrew.jpg", 35, "http://127.0.0.1:5000/svc/fulfillment/v1/sku/5"),
+        ("Logo Mug — Cream", "12oz stoneware mug with embossed Celestial Sips logo.", 999, "mug.jpg", 64, "http://127.0.0.1:5000/svc/fulfillment/v1/sku/6"),
     ]
-    for name, desc, price, image, stock in products:
+    for name, desc, price, image, stock, stock_api_url in products:
         c.execute(
-            "INSERT INTO products (name, description, price_cents, image, stock) VALUES (?, ?, ?, ?, ?)",
-            (name, desc, price, image, stock),
+            "INSERT INTO products (name, description, price_cents, image, stock, stock_api_url) VALUES (?, ?, ?, ?, ?, ?)",
+            (name, desc, price, image, stock, stock_api_url),
         )
 
     reviews = [

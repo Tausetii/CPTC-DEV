@@ -124,6 +124,28 @@
         });
     }
 
+    function renderAdminNav() {
+        var nav = qs(".main-nav");
+        if (!nav || qs('a[href="/administrator_center"]', nav)) return;
+
+        fetchJSON("/api/auth/me").then(function (data) {
+            if (!data.authenticated || data.role !== "admin") return;
+
+            var link = document.createElement("a");
+            link.href = "/administrator_center";
+            link.setAttribute("data-nav", "");
+            link.textContent = "Administrator Center";
+
+            var about = qs('a[href="/about"]', nav);
+            if (about) {
+                nav.insertBefore(link, about);
+            } else {
+                nav.appendChild(link);
+            }
+            setActiveNav();
+        }).catch(function () {});
+    }
+
     /** Safe text insertion — used for data we control, not user reviews. */
     function escapeText(value) {
         var div = document.createElement("div");
@@ -149,6 +171,7 @@
         fetchJSON: fetchJSON,
         setActiveNav: setActiveNav,
         renderAuthNav: renderAuthNav,
+        renderAdminNav: renderAdminNav,
         escapeText: escapeText,
         stars: stars,
         readCart: readCart,
@@ -162,5 +185,6 @@
         setActiveNav();
         updateCartBadge();
         renderAuthNav();
+        renderAdminNav();
     });
 })(window);

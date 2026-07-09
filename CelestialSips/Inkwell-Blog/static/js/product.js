@@ -24,6 +24,33 @@
         container.innerHTML = html;
     }
 
+    function setStockLabel(count) {
+        var stock = Inkwell.qs("#product-stock");
+        if (stock) {
+            stock.textContent = count + " units in stock";
+        }
+    }
+
+    function bindStockRefresh(product) {
+        var btn = Inkwell.qs("#stock-refresh-btn");
+        if (!btn || !product.stock_api_url) return;
+
+        btn.addEventListener("click", function () {
+            var id = Inkwell.productIdFromPath();
+            if (!id) return;
+
+            var query = "?stock_api=" + encodeURIComponent(product.stock_api_url);
+            btn.disabled = true;
+            Inkwell.fetchJSON("/api/products/" + id + "/stock" + query).then(function (data) {
+                setStockLabel(data.available);
+            }).catch(function () {
+                setStockLabel("—");
+            }).finally(function () {
+                btn.disabled = false;
+            });
+        });
+    }
+
     function loadProduct() {
         var id = Inkwell.productIdFromPath();
         if (!id) return;
@@ -33,7 +60,8 @@
             Inkwell.qs("#product-name").textContent = product.name;
             Inkwell.qs("#product-price").textContent = Inkwell.formatPrice(product.price_cents);
             Inkwell.qs("#product-desc").textContent = product.description;
-            Inkwell.qs("#product-stock").textContent = product.stock + " units in stock";
+            setStockLabel(product.stock);
+            bindStockRefresh(product);
             var btn = Inkwell.qs("#product-add-cart");
             if (btn) {
                 btn.addEventListener("click", function () {

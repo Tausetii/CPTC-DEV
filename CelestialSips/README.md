@@ -4,10 +4,12 @@ Intentionally vulnerable **single** web application for application penetration 
 
 ## Vulnerabilities to exercise
 
-1. **SQL injection** — Customer login builds queries via string concatenation. Bypass authentication and retrieve the admin’s secret token.
+1. **SQL injection** — Customer login builds queries via string concatenation. Bypass authentication and retrieve the admin’s secret token. Failed logins also return distinct errors that reveal whether a username exists or a password is valid (user enumeration).
 2. **Stored HTML XSS** — Product reviews are rendered client-side via `innerHTML` without sanitization. Inject basic HTML payloads (for example with `onerror` or `onload` handlers).
 3. **Hardcoded credentials** — Staff portal credentials are leaked in client-side JavaScript and `robots.txt`, granting access to an internal staff dashboard.
 4. **Checkout parameter tampering** — The cart UI enforces quantity limits in the browser, but checkout trusts client-supplied quantities and per-item prices in the POST body.
+5. **Missing authorization** — The administrator center is hidden from the nav for non-admins in client-side JavaScript only; the page and API lack server-side access controls.
+6. **Server-side request forgery (SSRF)** — Clicking **Refresh** on a product page sends a stock sync request that already includes a `stock_api` URL parameter for Burp interception and modification.
 
 ## Quick start
 

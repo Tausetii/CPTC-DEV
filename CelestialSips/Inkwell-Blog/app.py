@@ -5,6 +5,7 @@ from datetime import datetime
 from functools import wraps
 from urllib.parse import quote
 
+import requests
 from flask import (
     Flask, g, request, redirect, session, abort,
     send_from_directory, jsonify,
@@ -21,6 +22,29 @@ STAFF_CREDENTIALS = {
     "barista_mgr": "espresso2049",
     "inventory": "beans_and_books",
 }
+
+
+def ensure_schema():
+    if not os.path.exists(DB_PATH):
+        return
+    conn = sqlite3.connect(DB_PATH)
+    columns = {row[1] for row in conn.execute("PRAGMA table_info(products)")}
+    if "stock_api_url" not in columns:
+        conn.execute("ALTER TABLE products ADD COLUMN stock_api_url TEXT")
+        for row in conn.execute("SELECT id FROM products"):
+            product_id = row[0]
+            conn.execute(
+                "UPDATE products SET stock_api_url = ? WHERE id = ?",
+                (f"http://127.0.0.1:5000/svc/fulfillment/v1/sku/{product_id}", product_id),
+            )
+        conn.commit()
+    else:
+        conn.execute(
+            "UPDATE products SET stock_api_url = REPLACE(stock_api_url, '/internal/inventory/', '/svc/fulfillment/v1/sku/') "
+            "WHERE stock_api_url LIKE '%/internal/inventory/%'"
+        )
+        conn.commit()
+    conn.close()
 
 
 def get_db():
@@ -64,6 +88,25 @@ def staff_required_api(view):
 
 def send_page(filename):
     return send_from_directory(STATIC_DIR, filename)
+
+
+def _login_failure_message(db, username, password):
+    """
+    Intentionally verbose login errors — reveals whether the username
+    exists and/or whether the password matches a known account.
+    """
+    user = db.execute(
+        "SELECT password FROM users WHERE username = ?", (username,)
+    ).fetchone()
+    password_known = db.execute(
+        "SELECT 1 FROM users WHERE password = ?", (password,)
+    ).fetchone() is not None
+
+    if user:
+        return "That password is incorrect."
+    if password_known:
+        return "That username is incorrect."
+    return "That username and password were incorrect."
 
 
 # --------------------------------------------------------------------------- #
@@ -134,6 +177,11 @@ def page_staff():
     return send_page("staff.html")
 
 
+@app.route("/administrator_center")
+def page_administrator_center():
+    return send_page("administrator_center.html")
+
+
 @app.route("/robots.txt")
 def robots():
     return send_from_directory(STATIC_DIR, "robots.txt")
@@ -174,6 +222,82 @@ def api_product(product_id):
     if not row:
         return jsonify({"error": "not found"}), 404
     return jsonify(dict(row))
+
+
+def _sync_available_count(payload, fallback):
+    if isinstance(payload, dict):
+        for key in ("warehouse_stock", "available", "stock"):
+            if key in payload:
+                return payload[key]
+    return fallback
+
+
+@app.route("/api/products/<int:product_id>/stock")
+def api_product_stock(product_id):
+    """
+    Sync storefront availability from a backend catalog feed.
+
+    The feed URL is chosen server-side, but callers may override it via the
+    stock_api parameter — fetched without validation (SSRF).
+    """
+    db = get_db()
+    product = db.execute(
+        "SELECT id, name, stock, stock_api_url FROM products WHERE id = ?",
+        (product_id,),
+    ).fetchone()
+    if not product:
+        return jsonify({"error": "not found"}), 404
+
+    data = request.get_json(silent=True) or {}
+    stock_api = (
+        request.args.get("stock_api")
+        or data.get("stock_api")
+        or product["stock_api_url"]
+    )
+
+    if not stock_api:
+        return jsonify({
+            "product_id": product_id,
+            "name": product["name"],
+            "available": product["stock"],
+            "synced": False,
+        })
+
+    try:
+        response = requests.get(stock_api, timeout=5)
+        sync_detail = None
+        try:
+            sync_detail = response.json()
+        except ValueError:
+            sync_detail = response.text[:8000]
+
+        available = _sync_available_count(sync_detail, product["stock"])
+        return jsonify({
+            "product_id": product_id,
+            "name": product["name"],
+            "available": available,
+            "synced": response.status_code < 400,
+            "sync_detail": sync_detail,
+        })
+    except requests.RequestException:
+        return jsonify({"error": "availability sync failed"}), 502
+
+
+@app.route("/svc/fulfillment/v1/sku/<int:product_id>")
+def fulfillment_sku(product_id):
+    row = get_db().execute(
+        "SELECT id, name, stock FROM products WHERE id = ?",
+        (product_id,),
+    ).fetchone()
+    if not row:
+        return jsonify({"error": "not found"}), 404
+    return jsonify({
+        "sku": f"CS-{product_id:04d}",
+        "name": row["name"],
+        "available": row["stock"],
+        "reserved": 2,
+        "reorder_at": 5,
+    })
 
 
 @app.route("/api/products/<int:product_id>/reviews", methods=["GET", "POST"])
@@ -319,7 +443,7 @@ def api_login():
             })
         return redirect(target)
 
-    error = f"Invalid login for user '{username}'."
+    error = _login_failure_message(db, username, password)
     if request.is_json:
         return jsonify({"error": error}), 401
     return redirect(f"/login?error={quote(error)}")
@@ -410,9 +534,45 @@ def api_staff_logout():
     return redirect("/")
 
 
+# --------------------------------------------------------------------------- #
+# Administrator center — missing server-side authorization
+# --------------------------------------------------------------------------- #
+@app.route("/api/administrator_center")
+def api_administrator_center():
+    """
+    Intentionally missing authorization: no login or admin role check.
+
+    The nav link is hidden from non-admins in client-side JS only.
+    """
+    db = get_db()
+    users = db.execute(
+        "SELECT id, username, password, full_name, email, role, secret_token "
+        "FROM users ORDER BY id"
+    ).fetchall()
+    product_count = db.execute("SELECT COUNT(*) AS count FROM products").fetchone()["count"]
+    post_count = db.execute("SELECT COUNT(*) AS count FROM blog_posts").fetchone()["count"]
+
+    return jsonify({
+        "summary": {
+            "registered_users": len(users),
+            "admin_accounts": sum(1 for user in users if user["role"] == "admin"),
+            "products_listed": product_count,
+            "blog_posts": post_count,
+        },
+        "users": [dict(user) for user in users],
+        "operations": [
+            "Review flagged customer accounts",
+            "Export user directory for compliance audits",
+            "Rotate API tokens after suspected credential leaks",
+        ],
+    })
+
+
 if __name__ == "__main__":
     if not os.path.exists(DB_PATH):
         print("Database not found. Run: python seed.py")
+    else:
+        ensure_schema()
     host = os.environ.get("LAB_HOST", "0.0.0.0")
     port = int(os.environ.get("LAB_PORT", 5000))
     app.run(host=host, port=port, debug=True)
