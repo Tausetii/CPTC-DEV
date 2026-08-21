@@ -1,4 +1,4 @@
-# ARIA Concierge Portal · The Wormhole Casino & Resort
+# Wormhole Casino Website · The Wormhole Casino & Resort
 
 > 🚨 **INTENTIONALLY VULNERABLE TRAINING APPLICATION** 🚨
 >
@@ -33,7 +33,7 @@ Google Gemini API with deliberately permissive tool access.
 ## Quick start (Docker — recommended)
 
 ```bash
-cd Wormhole-Workspace/ARIA-Concierge-Portal
+cd wormhole-casino-website
 cp .env.example .env
 # (optional) put your Gemini key in .env: GEMINI_API_KEY=...
 docker compose up --build
@@ -135,7 +135,7 @@ Future ORB-IT turns ingest this content and may comply.
 ## Project layout
 
 ```
-ARIA-Concierge-Portal/
+wormhole-casino-website/
 ├─ prisma/
 │  ├─ schema.prisma
 │  └─ seed.ts

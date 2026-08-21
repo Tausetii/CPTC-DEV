@@ -36,7 +36,7 @@ The data-plane behavior (validate → strip key → inject real Google key → f
 ### What stays unchanged
 - The real `GEMINI_API_KEY` lives **only** on this box, only in the proxy process env. Never in the store, never in the admin UI, never logged.
 - Inbound `x-goog-api-key` is always stripped & replaced; path allowlist (`/v1`, `/v1beta`); `trust proxy` off by default; redacted URL logging.
-- **Portal side needs no code change.** Each clone already sends its `GEMINI_PROXY_TOKEN` as the API key ([../ARIA-Concierge-Portal/src/lib/server/gemini.ts:21](../ARIA-Concierge-Portal/src/lib/server/gemini.ts#L21)). We just give each machine a *unique* token instead of a shared one.
+- **Portal side needs no code change.** Each clone already sends its `GEMINI_PROXY_TOKEN` as the API key ([../wormhole-casino-website/src/lib/server/gemini.ts:21](../wormhole-casino-website/src/lib/server/gemini.ts#L21)). We just give each machine a *unique* token instead of a shared one.
 
 ---
 

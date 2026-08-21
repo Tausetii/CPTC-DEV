@@ -5,7 +5,7 @@ push them from your Windows host to the VMs, and what protects the real Gemini k
 
 - **`ai-proxy/`** — the off-box Gemini key broker (data plane + operator CLI +
   local-only admin console). See [ai-proxy/README.md](ai-proxy/README.md).
-- **`ARIA-Concierge-Portal/`** — the SvelteKit "Wormhole Casino" portal whose
+- **`wormhole-casino-website/`** — the SvelteKit "Wormhole Casino" portal whose
   ORB-IT chat talks to the proxy. (Intentionally vulnerable target.)
 
 ---
@@ -60,11 +60,11 @@ with its **own** per-machine token and must be **approved** before it can chat.
 scp -r "C:\Users\rober\Desktop\CPTC 2026\tryouts-cptc-2026-dev\Wormhole-Workspace\ai-proxy" user@172.16.216.103:~/
 
 # ARIA portal  →  portal VM
-scp -r "C:\Users\rober\Desktop\CPTC 2026\tryouts-cptc-2026-dev\Wormhole-Workspace\ARIA-Concierge-Portal" user@172.16.124.106:~/
+scp -r "C:\Users\rober\Desktop\CPTC 2026\tryouts-cptc-2026-dev\Wormhole-Workspace\wormhole-casino-website" user@172.16.124.106:~/
 ```
 
 Replace `user` with the real SSH username. Folders land at `~/ai-proxy` and
-`~/ARIA-Concierge-Portal`.
+`~/wormhole-casino-website`.
 
 ### Re-syncs / updates — `rsync` from Git Bash or WSL (skips junk, only sends changes)
 
@@ -81,7 +81,7 @@ rsync -avz --delete \
 # ARIA portal
 rsync -avz --delete \
   --exclude node_modules --exclude .svelte-kit --exclude build \
-  "/mnt/c/Users/rober/Desktop/CPTC 2026/tryouts-cptc-2026-dev/Wormhole-Workspace/ARIA-Concierge-Portal" \
+  "/mnt/c/Users/rober/Desktop/CPTC 2026/tryouts-cptc-2026-dev/Wormhole-Workspace/wormhole-casino-website" \
   user@172.16.124.106:~/
 ```
 
@@ -110,7 +110,7 @@ curl http://172.16.216.103:7000/healthz        # {"ok":true}
 
 **B. Each portal host (`172.16.124.106`):**
 ```bash
-cd ~/ARIA-Concierge-Portal
+cd ~/wormhole-casino-website
 nano .env            # GEMINI_PROXY_URL=http://172.16.216.103:7000
                      # ORIGIN=http://172.16.124.106:6767   (must match how you browse)
                      # PROXY_MACHINE_LABEL=team-1-portal

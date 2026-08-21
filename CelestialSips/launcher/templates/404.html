@@ -1,9 +1,0 @@
-{% extends "base.html" %}
-{% block title %}Not found{% endblock %}
-{% block content %}
-<div class="panel">
-    <h2>Lab not found</h2>
-    <p style="color: var(--text-muted);">That lab ID does not exist.</p>
-    <a class="btn" href="{{ url_for('index') }}">Back to labs</a>
-</div>
-{% endblock %}
